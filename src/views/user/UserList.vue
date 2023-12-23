@@ -30,6 +30,8 @@ User
                     {{ sex == '1' ? '男' : '女' }}
                 </template>
             </el-table-column>
+            <el-table-column prop="age" label="年龄" width="150">
+            </el-table-column>
             <el-table-column prop="type" label="用户类型" width="120">
                 <template>
                     {{ type == '1' ? '工作人员' : '客户' }}
@@ -58,33 +60,41 @@ export default {
         return {
             database: [{
                 userId: '1',
-                username: '王小虎',
+                password:'',
+                username: '王小虎',             
                 name: '吴骏浩',
                 sex: 1,
+                age:80,
                 type: 1,
                 address: '上海市普陀区金沙江路 1518 弄',
                 phone: 200333
             }, {
                 userId: '1',
+                password:'',
                 username: '王小虎',
                 name: '吴骏浩',
                 sex: 1,
+                age:80,
                 type: 1,
                 address: '上海市普陀区金沙江路 1518 弄',
                 phone: 200333
             }, {
                 userId: '1',
+                password:'',
                 username: '王小虎',
                 name: '吴骏浩',
                 sex: 1,
+                age:80,
                 type: 1,
                 address: '上海市普陀区金沙江路 1518 弄',
                 phone: 200333
             }, {
                 userId: '1',
+                password:'',
                 username: '王小虎',
                 name: '吴骏浩',
                 sex: 1,
+                age:80,
                 type: 1,
                 address: '上海市普陀区金沙江路 1518 弄',
                 phone: 200333
@@ -95,7 +105,7 @@ export default {
         // 在组件挂载后设置定时器
         setTimeout(() => {
             this.loading = false; // 1秒后将loading设置为false
-        }, 1000); // 1000毫秒 = 1秒
+        }, 500); // 500毫秒 = 0.1秒
     },
     methods: {
         performSearch() {
