@@ -1,15 +1,15 @@
 <template>
-  <div>
-    用户添加
-  </div>
+  <el-card>
+    <div slot="header">
+      用户添加
+    </div>
+  </el-card>
 </template>
 
 <script>
-  export default {
-    
-  }
+export default {
+
+}
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

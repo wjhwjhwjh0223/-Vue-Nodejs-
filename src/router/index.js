@@ -35,11 +35,11 @@ export const menuRoutes = [
     ]
   },
 
-  // 商品功能模块
+  // 用户功能模块
   {
     path: '/user',
     component: () => import('@/layout/Layout.vue'),
-    meta: { title: '用户管理', icon: 'el-icon-s-goods' },
+    meta: { title: '用户管理', icon: 'el-icon-user-solid' },
     children: [
       {
         path: '/user/list',
@@ -53,8 +53,77 @@ export const menuRoutes = [
         // @符号就是src的别名
         component: () => import('@/views/user/UserAdd.vue')
       },
+      {
+        path:'/user/mimaxiugai',
+        meta: { title: '密码修改',  },
+        component: () => import('@/views/user/mimaxiugai.vue')
+      },{
+        path:'/user/gerenzhongxin',
+        meta: { title: '个人中心',  },
+        component: () => import('@/views/user/gerenzhongxin.vue')
+      }
     ]
+  },
+  //服务管理模块
+  {
+    path: '/fuwuguanli',
+    component: () => import('@/layout/Layout.vue'),
+    meta: { title: '服务管理', icon: 'el-icon-phone' },
+    children: [{
+      path:'/fuwuguanli/fuwushenhe',
+      meta: { title: '服务审核',  },
+      component: () => import('@/views/fuwuguanli/fuwushenhe.vue')
+    },
+    {
+      path:'/fuwuguanli/fuwuzhuangtai',
+      meta: { title: '服务状态',  },
+      component: () => import('@/views/fuwuguanli/fuwuzhuangtai.vue')
+    }
+    ]
+  },
+  //紧急事件模块
+  {
+    path: '/jinjishijian',
+    component: () => import('@/layout/Layout.vue'),
+    meta: { title: '紧急事件', icon: 'el-icon-warning' },
+    children: [{
+      path:'/jinjishijian/shijianliebiao',
+      meta: { title: '事件列表',  },
+      component: () => import('@/views/jinjishijian/shijianliebiao.vue')
+    },{
+      path:'/jinjishijian/renyuanfenpei',
+      meta: { title: '人员分配',  },
+      component: () => import('@/views/jinjishijian/renyuanfenpei.vue')
+    },{
+      path: '/jinjishijian/shijianzhuangtai',
+      meta: { title: '事件状态',  },
+      component: () => import('@/views/jinjishijian/shijianzhuangtai.vue')
+    }
+  ]
+  },
+  //活动管理模块
+  {
+    path: '/huodongguanli',
+    component: () => import('@/layout/Layout.vue'),
+    meta: { title: '活动管理', icon: 'el-icon-s-flag' },
+    children:[{
+      path:'/huodongguanli/huodongliebiao',
+      meta: { title: '活动日历',  },
+      component: () => import('@/views/huodongguanli/huodongrili.vue')
+    },
+    {
+      path: '/huodongguanli/huodongxiangqing',
+      meta: { title: '活动详情',  },
+      component: () => import('@/views/huodongguanli/huodongxiangqing.vue')
+    },
+    {
+      path: '/huodongguanli/renyuanliebiao',
+      meta:{ title: '人员列表',},
+      commonent: () => import('@/views/huodongguanli/renyuanliebiao.vue')
+    }
+  ]
   }
+  
 
 
 ]
