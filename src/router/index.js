@@ -94,10 +94,6 @@ export const menuRoutes = [
       path:'/jinjishijian/renyuanfenpei',
       meta: { title: '人员分配',  },
       component: () => import('@/views/jinjishijian/renyuanfenpei.vue')
-    },{
-      path: '/jinjishijian/shijianzhuangtai',
-      meta: { title: '事件状态',  },
-      component: () => import('@/views/jinjishijian/shijianzhuangtai.vue')
     }
   ]
   },
@@ -112,14 +108,9 @@ export const menuRoutes = [
       component: () => import('@/views/huodongguanli/huodongrili.vue')
     },
     {
-      path: '/huodongguanli/huodongxiangqing',
-      meta: { title: '活动详情',  },
-      component: () => import('@/views/huodongguanli/huodongxiangqing.vue')
-    },
-    {
-      path: '/huodongguanli/renyuanliebiao',
-      meta:{ title: '人员列表',},
-      commonent: () => import('@/views/huodongguanli/renyuanliebiao.vue')
+      path: '/huodongguanli/huodongshenhe',
+      meta: { title: '活动审核',  },
+      component: () => import('@/views/huodongguanli/huodongshenhe.vue')
     }
   ]
   }

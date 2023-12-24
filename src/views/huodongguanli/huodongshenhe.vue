@@ -2,9 +2,9 @@
     <div>
         <el-card>
         <div slot="header">
-            <span>活动人员列表</span>
+            <span>活动审核</span>
         </div>
-    </el-card> 
+    </el-card>
     </div>
 </template>
 
