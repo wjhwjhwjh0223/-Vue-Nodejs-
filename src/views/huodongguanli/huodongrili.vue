@@ -11,7 +11,7 @@
           <span>{{ date.getDate() }}</span>
           <ul class="event-list">
             <li v-for="event in getEvents(date)" :key="event.id" class="event-item" @click="showEventDetail(event)">
-              {{ event.name }}
+              {{ event.activityname }}
             </li>
           </ul>
         </div>
@@ -19,23 +19,71 @@
     </el-calendar>
     <!-- 活动详情的对话框 -->
     <el-dialog :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
-      <h2>{{ currentEvent.name }}</h2>
+      <h2>{{ currentEvent.activityname }}</h2>
       <p>{{ currentEvent.date }}</p>
-      <p>{{ currentEvent.description }}</p>
+      <p>{{ currentEvent.address }}</p>
+      <p>{{ currentEvent.activitytype }}</p>
+      <p>{{ currentEvent.activitystatus }}</p>
     </el-dialog>
   </div>
 </template>
-  
-  
+
 <script>
 export default {
   data() {
     return {
       value: new Date(), // 当前选中的日期
-      // 确保这里的日期格式与 getEvents 方法生成的格式完全一致
-      events: [
-        { id: 1, date: '2023-12-21', name: '新年聚会' },
-        { id: 2, date: '2023-01-15', name: '社区大扫除' },
+      tableData: [
+        {
+          
+          date: '2023-12-25',
+          activityname: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+          activitytype: '美食/餐厅线上活动',
+          activitystatus: '进行中'
+        }, {
+          
+          date: '2023-12-26',
+          activityname: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+          activitytype: '美食/餐厅线上活动',
+          activitystatus: '待审核'
+        }, {
+          
+          date: '2016-05-03',
+          activityname: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+          activitytype: '美食/餐厅线上活动',
+          activitystatus: '已完成'
+        }, {
+          
+          date: '2016-05-03',
+          activityname: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+          activitytype: '美食/餐厅线上活动',
+          activitystatus: '待审核'
+        }, {
+          
+          date: '2016-05-03',
+          activityname: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+          activitytype: '美食/餐厅线上活动',
+          activitystatus: '待审核'
+        }, {
+          
+          date: '2016-05-03',
+          activityname: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+          activitytype: '美食/餐厅线上活动',
+          activitystatus: '待审核'
+        }, {
+          
+          date: '2016-05-03',
+          activityname: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+          activitytype: '美食/餐厅线上活动',
+          activitystatus: '待审核'
+        }
       ],
       dialogVisible: false,
       currentEvent: {},
@@ -43,9 +91,8 @@ export default {
   },
   methods: {
     getEvents(date) {
-      // 确保日期格式化后与 events 数组中的日期格式一致
       const dateString = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-      return this.events.filter(event => event.date === dateString);
+      return this.tableData.filter(event => event.date === dateString);
     },
     showEventDetail(event) {
       this.currentEvent = event;
@@ -57,7 +104,7 @@ export default {
   },
 };
 </script>
-  
+
 <style scoped>
 .el-calendar .cell {
   display: flex;
@@ -83,4 +130,3 @@ export default {
   text-align: center;
 }
 </style>
-  
