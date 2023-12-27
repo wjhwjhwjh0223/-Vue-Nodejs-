@@ -32,7 +32,7 @@ User
             </el-table-column>
             <el-table-column prop="age" label="年龄" width="150">
             </el-table-column>
-            <el-table-column prop="type" label="用户类型" width="120">
+            <el-table-column prop="genre" label="用户类型" width="120">
                 <template>
                     {{ type == '1' ? '工作人员' : '客户' }}
                 </template>
@@ -65,7 +65,7 @@ export default {
                 name: '吴骏浩',
                 sex: 1,
                 age:80,
-                type: 1,
+                genre: 1,
                 address: '上海市普陀区金沙江路 1518 弄',
                 phone: 200333
             }, {
@@ -75,7 +75,7 @@ export default {
                 name: '吴骏浩',
                 sex: 1,
                 age:80,
-                type: 1,
+                genre: 1,
                 address: '上海市普陀区金沙江路 1518 弄',
                 phone: 200333
             }, {
@@ -85,7 +85,7 @@ export default {
                 name: '吴骏浩',
                 sex: 1,
                 age:80,
-                type: 1,
+                genre: 1,
                 address: '上海市普陀区金沙江路 1518 弄',
                 phone: 200333
             }, {
@@ -95,7 +95,7 @@ export default {
                 name: '吴骏浩',
                 sex: 1,
                 age:80,
-                type: 1,
+                genre: 1,
                 address: '上海市普陀区金沙江路 1518 弄',
                 phone: 200333
             }], loading: true
