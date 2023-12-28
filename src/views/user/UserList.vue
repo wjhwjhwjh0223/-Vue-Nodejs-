@@ -1,4 +1,3 @@
-User
 <template>
     <div>
         <el-card>
@@ -6,9 +5,9 @@ User
                 <span>用户列表</span>
             </div>
             <div class="top-bar">
-                <el-input v-model="database.userId" placeholder="输入用户ID" class="search-input" @keyup.enter="performSearch">
+                <el-input v-model="list.id" placeholder="输入用户ID" class="search-input" @keyup.enter="performSearch">
                 </el-input>
-                <el-input v-model="database.username" placeholder="输入用户名" class="search-input" @keyup.enter="performSearch">
+                <el-input v-model="list.username" placeholder="输入用户名" class="search-input" @keyup.enter="performSearch">
                 </el-input>
                 <el-button type="primary" icon="el-icon-search" @click="performSearch">
                     搜索
@@ -18,28 +17,21 @@ User
                 </el-button>
             </div>
         </el-card>
-        <el-table v-loading="loading" :data="database" border style="width: 100%">
-            <el-table-column fixed prop="userId" label="用户编号" width="150">
+        <el-table v-loading="loading" :data="list" border style="width: 100%">
+            <el-table-column fixed prop="id" label="用户编号" width="150">
             </el-table-column>
-            <el-table-column prop="username" label="用户姓名" width="120">
+            <el-table-column prop="username" label="用户名" width="120">
             </el-table-column>
-            <el-table-column prop="name" label="真实姓名" width="120">
+            <el-table-column prop="password" label="密码" width="120">
             </el-table-column>
-            <el-table-column prop="sex" label="性别" width="100">
+            <el-table-column prop="sex" label="用户类型" width="100">
                 <template>
-                    {{ sex == '1' ? '男' : '女' }}
+                    {{ sex == '1' ? '普通用户' : '工作人员' }}
                 </template>
             </el-table-column>
-            <el-table-column prop="age" label="年龄" width="150">
+            <el-table-column prop="ctime" label="创建日期" width="120">
             </el-table-column>
-            <el-table-column prop="genre" label="用户类型" width="120">
-                <template>
-                    {{ type == '1' ? '工作人员' : '客户' }}
-                </template>
-            </el-table-column>
-            <el-table-column prop="address" label="地址" width="300">
-            </el-table-column>
-            <el-table-column prop="phone" label="电话" width="120">
+            <el-table-column prop="utime" label="更新日期" width="120">
             </el-table-column>
             <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
@@ -49,56 +41,33 @@ User
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination background layout="prev, pager, next" :total="1000">
+        <el-pagination  @current-change="pagechange" background layout="prev, pager, next" :total="total" :page-size="pagesize">
         </el-pagination>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
+    async created() {
+        let res = await axios({
+            url: 'http://localhost:3000/user',
+            method: 'get',
+            params: {
+                pagenumber: this.pagenumber,
+                pagesize: this.pagesize
+            }
+        });
+        console.log(res)
+        this.list = res.data.data.list;
+        this.total = res.data.data.total;
+    },
     data() {
         return {
-            database: [{
-                userId: '1',
-                password:'',
-                username: '王小虎',             
-                name: '吴骏浩',
-                sex: 1,
-                age:80,
-                genre: 1,
-                address: '上海市普陀区金沙江路 1518 弄',
-                phone: 200333
-            }, {
-                userId: '1',
-                password:'',
-                username: '王小虎',
-                name: '吴骏浩',
-                sex: 1,
-                age:80,
-                genre: 1,
-                address: '上海市普陀区金沙江路 1518 弄',
-                phone: 200333
-            }, {
-                userId: '1',
-                password:'',
-                username: '王小虎',
-                name: '吴骏浩',
-                sex: 1,
-                age:80,
-                genre: 1,
-                address: '上海市普陀区金沙江路 1518 弄',
-                phone: 200333
-            }, {
-                userId: '1',
-                password:'',
-                username: '王小虎',
-                name: '吴骏浩',
-                sex: 1,
-                age:80,
-                genre: 1,
-                address: '上海市普陀区金沙江路 1518 弄',
-                phone: 200333
-            }], loading: true
+            list: [],
+            pagenumber: 1,
+            pagesize: 5,
+            total: 0,
         };
     },
     mounted() {
@@ -121,7 +90,7 @@ export default {
                 });
             }
         },
-        dropdata(row){
+        dropdata(row) {
             this.$confirm('确认删除这条记录吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -132,13 +101,13 @@ export default {
                 this.$message({
                     type: 'success',
                     message: '删除成功!',
-                    
+
                 });
             }).catch(() => {
                 this.$message({
                     type: 'info',
                     message: '已取消删除'
-                }); 
+                });
             });
         },
         resetSearch() {
@@ -147,9 +116,27 @@ export default {
             // 这里可以添加其他重置逻辑
         }, handleClick(row) {
             console.log(row);
-        }
-    }
+        }, async pagechange(pagenumber) {
+            console.log(`页码改变了：${pagenumber}`);
+            this.pagenumber = pagenumber
+            // 重新请求数据
+            const res = await axios({
+                url: "http://localhost:3000/user",
+                method: "get",
+                // get
+                params: {
+                    pagenumber: this.pagenumber,
+                    pagesize: this.pagesize,
+                },
+            });
+            console.log(res);
+            // 2.把得到的数据放在data下
+            this.list = res.data.data.list;
+            this.total = res.data.data.total;
+        },
+    },
 }
+
 </script>
 
 

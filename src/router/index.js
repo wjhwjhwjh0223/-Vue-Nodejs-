@@ -61,6 +61,10 @@ export const menuRoutes = [
         path:'/user/gerenzhongxin',
         meta: { title: '个人中心',  },
         component: () => import('@/views/user/gerenzhongxin.vue')
+      },{
+        path:'/user/UserTest',
+        meta: { title: '用户测试',  },
+        component: () => import('@/views/user/UserTest.vue')
       }
     ]
   },
