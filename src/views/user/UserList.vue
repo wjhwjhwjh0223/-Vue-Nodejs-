@@ -13,8 +13,7 @@
                 <el-button type="default" icon="el-icon-refresh" @click="resetSearch">
                     重置
                 </el-button>
-            </div>
-        </el-card>
+            </div>   
         <el-table :data="list" border style="width: 100%">
             <el-table-column fixed prop="id" label="用户编号" width="150">
             </el-table-column>
@@ -42,6 +41,7 @@
         <el-pagination @current-change="pagechange" background layout="prev, pager, next" :total="total"
             :page-size="pagesize">
         </el-pagination>
+    </el-card>
     </div>
 </template>
 
@@ -53,7 +53,6 @@ export default {
     },
     data() {
         return {
-
             list: [],
             pagenumber: 1,
             pagesize: 5,
@@ -77,7 +76,6 @@ export default {
         },
         //获取参数
         async getparms() {
-
             const res = await axios({
                 url: "http://localhost:3000/user",
                 method: "get",

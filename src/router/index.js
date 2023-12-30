@@ -48,10 +48,15 @@ export const menuRoutes = [
         component: () => import('@/views/user/UserList.vue')
       },
       {
-        path: '/user/add',
-        meta: { title: '用户添加',  },
+        path:'/user/laorenmingdan',
+        meta:{title:'老人列表'},
+        component:()=>import('@/views/user/laorenmingdan.vue')
+      },
+      {
+        path: '/user/generaladd',
+        meta: { title: '老人添加',  },
         // @符号就是src的别名
-        component: () => import('@/views/user/UserAdd.vue')
+        component: () => import('@/views/user/GeneralAdd.vue')
       },
       {
         path:'/user/mimaxiugai',

@@ -4,6 +4,7 @@ import router from './router'
 
 // 引入element的所有组件
 import ElementUI from 'element-ui';
+
 // 组件库的样式文件
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/style/reset.css'
@@ -15,7 +16,8 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 
 Vue.use(dataV)
-
+// 添加 Message 到 Vue 的原型链上以便在组件内部可以通过 this.$message 访问
+Vue.prototype.$message = ElementUI.Message;
 
 
 new Vue({
