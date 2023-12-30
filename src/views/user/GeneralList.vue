@@ -38,7 +38,7 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="100">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small">编辑</el-button>
+                        <el-button @click="editData(scope.row)" type="text" size="small">编辑</el-button>
                         <el-button @click="dropdata(scope.row.id)" type="text" size="small">删除</el-button>
                     </template>
                 </el-table-column>
@@ -47,6 +47,39 @@
                 :page-size="pagesize">
             </el-pagination>
         </el-card>
+        <!-- 编辑弹窗 -->
+        <el-dialog :visible.sync="editDialogVisible" title="编辑用户信息">
+            <el-form :model="editFormData">
+                <el-form-item label="用户ID">
+                    <el-input v-model="editFormData.id" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="姓名">
+                    <el-input v-model="editFormData.name"></el-input>
+                </el-form-item>
+                <el-form-item label="年龄">
+                    <el-input v-model="editFormData.age" type="number"></el-input>
+                </el-form-item>
+                <el-form-item label="性别">
+                    <el-radio-group v-model="editFormData.sex">
+                        <el-radio label="1">男</el-radio>
+                        <el-radio label="0">女</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="地址">
+                    <el-input v-model="editFormData.address"></el-input>
+                </el-form-item>
+                <el-form-item label="电话号码">
+                    <el-input v-model="editFormData.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="紧急联系人">
+                    <el-input v-model="editFormData.contacts"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="submitEdit">保存</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -58,6 +91,8 @@ export default {
     },
     data() {
         return {
+            editDialogVisible: false, // 控制编辑弹窗的显示
+            editFormData: {}, // 编辑表单的数据
             list: [],
             pagenumber: 1,
             pagesize: 5,
@@ -67,7 +102,33 @@ export default {
             }
         };
     },
-    methods: { //删除数据
+    methods: {
+        editData(rowData) {
+            this.editFormData = { ...rowData }; // 填充表单数据
+            this.editDialogVisible = true; // 显示弹窗
+        },
+        async submitEdit() {
+            try {
+                const response = await axios({
+                    method: 'post',
+                    url: 'http://localhost:3000/generalUpdate',
+                    data: this.editFormData
+                });
+                if (response.data.code === 1) {
+                    this.$message({ type: 'success', message: '更新成功!' });
+                    this.getparms(); // 重新获取数据以更新列表
+                } else {
+                    this.$message({ type: 'error', message: response.data.msg || '更新失败!' });
+                }
+            } catch (error) {
+                this.$message.error('更新过程中出现错误！');
+                console.error(error);
+            }
+
+            this.editDialogVisible = false; // 关闭弹窗
+        }
+        ,
+        //删除数据
         async dropdata(id) {
             let res = await axios({
                 url: 'http://localhost:3000/generalDelete',

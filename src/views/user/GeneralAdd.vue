@@ -2,7 +2,7 @@
   <div class="register-page">
     <div class="register-form-container">
       <el-card class="register-card">
-        <div slot="header" class="card-header">用户注册</div>
+        <div slot="header" class="card-header">老人账户注册</div>
         <el-form :model="form" :rules="rules" ref="form" label-width="120px" label-position="right">
           <el-form-item label="登录账号" prop="id">
             <el-input v-model="form.id" placeholder="请输入登录账号"></el-input>

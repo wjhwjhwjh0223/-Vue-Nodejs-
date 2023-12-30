@@ -42,21 +42,25 @@ export const menuRoutes = [
     meta: { title: '用户管理', icon: 'el-icon-user-solid' },
     children: [
       {
-        path: '/user/list',
-        meta: { title: '用户列表',  },
-        // @符号就是src的别名
-        component: () => import('@/views/user/UserList.vue')
-      },
-      {
-        path:'/user/laorenmingdan',
+        path:'/user/generallist',
         meta:{title:'老人列表'},
-        component:()=>import('@/views/user/laorenmingdan.vue')
+        component:()=>import('@/views/user/GeneralList')
       },
       {
         path: '/user/generaladd',
         meta: { title: '老人添加',  },
         // @符号就是src的别名
         component: () => import('@/views/user/GeneralAdd.vue')
+      },
+      {
+        path: '/user/stafflist',
+        meta: { title: '员工列表',  },
+        component: () => import('@/views/user/StaffList.vue')
+      },
+      {
+        path: '/user/staffadd',
+        meta: { title: '员工添加',  },
+        component: () => import('@/views/user/StaffAdd.vue')
       },
       {
         path:'/user/mimaxiugai',
