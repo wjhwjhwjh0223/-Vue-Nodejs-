@@ -40,9 +40,9 @@ export default {
   flex-direction: column;
   justify-content: center; /* 垂直居中内容 */
   align-items: center; /* 水平居中内容 */
-  min-height: 100vh; /* 确保至少与视口一样高 */
-  margin: 0; /* 移除默认的边距 */
-  padding: 0; /* 移除默认的填充 */
+  min-height: 100vh; 
+  margin: 0;
+  padding: 0; 
   background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
