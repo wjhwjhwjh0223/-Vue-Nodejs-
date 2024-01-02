@@ -4,8 +4,8 @@
         <el-card class="register-card">
           <div slot="header" class="card-header">工作人员账户注册</div>
           <el-form :model="form" :rules="rules" ref="form" label-width="120px" label-position="right">
-            <el-form-item label="登录账号" prop="id">
-              <el-input v-model="form.id" placeholder="请输入登录账号"></el-input>
+            <el-form-item label="登录账号" prop="account">
+              <el-input v-model="form.account" placeholder="请输入登录账号"></el-input>
             </el-form-item>
   
             <el-form-item label="姓名" prop="name">
@@ -58,7 +58,7 @@
   
       return {
         form: {
-          id: '',
+          account: '',
           name: '',
           password: '',
           confirmPassword: '',
@@ -68,7 +68,7 @@
           phone: '',
         },
         rules: {
-          id: [
+          account: [
             { required: true, message: '请输入登录账号', trigger: 'blur' },
             { min: 6, max: 15, message: '登录账号长度在 6 到 15 个字符', trigger: 'blur' }
           ],

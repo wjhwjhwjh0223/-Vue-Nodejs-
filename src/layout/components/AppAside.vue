@@ -7,9 +7,9 @@
     </el-switch>
     <el-menu :default-active="comCurIndex" router background-color="#304156" :collapse="!isopen">
       <!-- 插槽 -->
-      <template v-for="route in menuRoutes">
+      <template v-for="route in activeMenuRoutes">
         
-
+        
         <!-- 当route只有一个孩子的时候 -->
         <el-menu-item v-if="route.children.length === 1" :key="route.path" :index="route.path">
           <i :class="route.meta.icon || 'el-icon-menu'"></i>
@@ -40,7 +40,8 @@
         isopen: true,
         // 当前定位项
         curIndex: '',
-        menuRoutes
+        menuRoutes,
+        role: localStorage.getItem('role')
       }
     },
     methods: {
@@ -66,6 +67,16 @@
       window.removeEventListener('resize', this.handelWindowResize)
     },
     computed: {
+      activeMenuRoutes() {
+        let role = localStorage.getItem('role')
+        if(role) {
+          return this.menuRoutes.filter(item => {
+            return (item.meta.role || []).includes(role)
+          })
+        } else {
+          return this.menuRoutes
+        }
+      },  
       // 1. 因为页面中用到了comCurIndex，所以一进页面计算属性会计算一次，然后把计算之后的值给comCurIndex
       // 2. 每次页面的切换，$route都发生变化，计算属性都会重新执行
       comCurIndex() {

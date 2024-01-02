@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-
+//角色:管理员,工作人员,老人
 // 这里定义非菜单栏的路由
 const commonRoutes = [
   // 登录
@@ -23,7 +23,7 @@ export const menuRoutes = [
   {
     path: '/home',
     component: () => import('@/layout/Layout.vue'),
-    meta: { title: '首页', menu: true, icon: 'el-icon-s-platform' },
+    meta: { title: '首页', menu: true, icon: 'el-icon-s-platform' ,role:['管理员','工作人员','老人0']},
     children: [
       {
         // 等价于取父亲的path
