@@ -4,7 +4,6 @@
             <div slot="header">
                 <span>人员分配</span>
             </div>
-        </el-card>
         <el-container>
             <el-main>
                 <el-row>
@@ -41,6 +40,7 @@
                 <el-button type="primary" @click="confirmAssignment">确认分配</el-button>
             </el-main>
         </el-container>
+    </el-card>
     </div>
 </template>
 

@@ -83,8 +83,8 @@ export default {
         Message.error('登录请求失败');
         console.error('登录错误:', error);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
