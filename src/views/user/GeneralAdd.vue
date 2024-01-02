@@ -104,7 +104,6 @@ export default {
         ],
         contacts: [
           { required: true, message: '请输入紧急联系方式', trigger: 'blur' },
-          { type: 'number', message: '紧急联系方式必须为数字值', trigger: 'blur' }
         ],
       }
     };

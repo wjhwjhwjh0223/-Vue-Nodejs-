@@ -1,125 +1,126 @@
 <template>
-  <div class="login-box">
-      <div class="xjl">
-          <div class="xwt">
-              <div class="j"><img src="https://p6.itc.cn/q_70,c_lfill,w_372,h_216,g_face/images01/20230704/727ce84e6c6046e580bc9bf7c610cd01.jpeg" alt=""></div>
-          </div>
-          <div class="x">
-      <div>账号： <input v-model="account" id="inpt" type="text"></div><br>
-      <!-- type为password， 表示密码框-->
-      <div>密码： <input v-model="password" type="password"></div><br>
-      <div class="jl">
-          <div><button @click="login">登录</button></div>
-          <div><button>注册</button></div>
-      </div>
-      </div>
-      <div class="wt"></div>
+  <div class="login-wrapper">
+    <div class="login-form">
+      <h2 class="login-title">系统登录</h2>
+      <!-- 表单的容器 -->
+      <el-form ref="ruleform">
+        <!-- 表单项 账号 -->
+        <el-form-item>
+          <!-- 该表单项的内容 -->
+          <el-input suffix-icon="icon-yonghu iconfont" prefix-icon="el-icon-search" placeholder="请输入账号"
+            v-model="form.account"></el-input>
+        </el-form-item>
+        <!-- 表单项 密码 -->
+        <el-form-item>
+          <el-input type="password" placeholder="请输入密码" v-model="form.password">
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          </el-input>
+        </el-form-item>
+        <!-- 表单项 角色 -->
+        <el-form-item>
+          <el-select v-model="form.role">
+            <el-option label="管理员" value="userLogin"></el-option>
+            <el-option label="工作人员" value="staffLogin"></el-option>
+            <el-option label="用户" value="generalLogin"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="submit" style="width: 100%" type="primary">登录</el-button>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        account: '123',
-        password: '123'
+import axios from "axios";
+import { Message } from "element-ui";
+export default {
+  data() {
+    return {
+      form: {
+        account: "",
+        password: "",
+        role: "",
+      },
+    };
+  },
+  methods: {
+    clickEyes() {
+      this.showPwd = !this.showPwd;
+    },
+    // 提交表单 async
+    async submit() {
+      let apiPath = '';
+      switch (this.form.role) {
+        case 'userLogin':
+          apiPath = 'http://localhost:3000/userLogin';
+          break;
+        case 'staffLogin':
+          apiPath = 'http://localhost:3000/staffLogin';
+          break;
+        case 'generalLogin':
+          apiPath = 'http://localhost:3000/staffLogin';
+          break;
+        default:
+          Message.error('请选择角色');
+          return;
+      }
+
+      try {
+        const loginRes = await axios.post(apiPath, {
+          account: this.form.account,
+          password: this.form.password,
+        });
+        if (loginRes.data.code == 1) {
+          localStorage.setItem("userId", loginRes.data.data.id);
+          localStorage.setItem("role", this.form.role);
+          this.$router.push('/home');
+        } else {
+          Message.error(loginRes.data.msg || '登录失败');
+        }
+      } catch (error) {
+        Message.error('登录请求失败');
+        console.error('登录错误:', error);
       }
     },
-    methods: {
-      login() {
-        console.log(`账号: ${this.account}, 密码: ${this.password}`)
-        console.log(`发送给后端`)
-        console.log(`得到后端结果：登陆成功`)
-        console.log(`登录成功：跳转页面`)
-        this.$router.push('/home')
-      }
-    }
-  }
+  },
+};
 </script>
 
-<style scoped>
-*{
-  margin: 0;
-  padding: 0;
-}
-.login-box{
+<style lang="scss" scoped>
+.login-wrapper {
   width: 100vw;
   height: 100vh;
-  background-color: black;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* 添加背景图片  background-image: url('') */
-  background-image: url('https://uimg.huixiaoer.net/86124669/b70f06b21f95d5548b1313da56194914.jpg');
-  /* 背景图片的大小  background-size: cover;   （cover）是覆盖整个元素*/
-  background-size: cover;
-}
-.xjl{
-  width: 400px;
-  height: 400px;
-  background-color: white;
-}
-.jl{
-  display: flex;
-  justify-content:space-between;
-  margin-bottom: 10px;
-}
-.jl div{
-  margin-left: 30px;
-}
-.xwt{
-  width: 100%;
-  height: 120px;
-  background-color: aqua;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.wt{
-  width: 100%;
-  height: 60px;
-  background-color: rgb(81, 80, 79);
-}
-.x{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px;
-  height: 220px;
-}
-.x input{
-  /* 边框厚度为1，颜色为红色   （border 表示边框） */
-  border: 1px solid red;
-}
-.jl button{
-  top:5px;
-  /* position:relative;  相对定位
-      position:absolute; 绝对定位*/
-  position:relative;
-  margin-bottom: 5px;
-  transition: all 0.3s;
-}
-.jl button:hover{
-  background-color: red;
-  top:6px
-}
-.xwt img{
-  width: 80px;
-  height: 80px;
-  justify-content: center;
-  align-items: center;
-  transform: scale();
-  transition: all 0.5s;
-}
-.j{
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-}
-.xwt img:hover{
-  transform: scale(1.3);
+  background-color: #2d3a4b;
+
+  .login-form {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .login-title {
+      margin: 20px;
+      font-weight: 700;
+      font-size: 22px;
+      color: #fff;
+    }
+
+    .el-form {
+      width: 100%;
+    }
+  }
+
+  ::v-deep .el-input__inner {
+    background-color: #2d3a4b;
+  }
+
+  ::v-deep .el-input input {
+    color: #fff;
+  }
 }
 </style>

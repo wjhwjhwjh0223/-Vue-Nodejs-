@@ -23,7 +23,7 @@ export const menuRoutes = [
   {
     path: '/home',
     component: () => import('@/layout/Layout.vue'),
-    meta: { title: '首页', menu: true, icon: 'el-icon-s-platform' ,role:['管理员','工作人员','老人0']},
+    meta: { title: '首页', menu: true, icon: 'el-icon-s-platform' ,role:['userLogin','staffLogin','staffLogin']},
     children: [
       {
         // 等价于取父亲的path
@@ -39,7 +39,7 @@ export const menuRoutes = [
   {
     path: '/user',
     component: () => import('@/layout/Layout.vue'),
-    meta: { title: '用户管理', icon: 'el-icon-user-solid' },
+    meta: { title: '用户管理', icon: 'el-icon-user-solid' ,role:['userLogin','staffLogin','staffLogin']},
     children: [
       {
         path:'/user/generallist',
@@ -77,7 +77,7 @@ export const menuRoutes = [
   {
     path: '/fuwuguanli',
     component: () => import('@/layout/Layout.vue'),
-    meta: { title: '服务管理', icon: 'el-icon-phone' },
+    meta: { title: '服务管理', icon: 'el-icon-phone' ,role:['userLogin','staffLogin','staffLogin']},
     children: [{
       path:'/fuwuguanli/fuwushenhe',
       meta: { title: '服务审核',  },
@@ -94,7 +94,7 @@ export const menuRoutes = [
   {
     path: '/jinjishijian',
     component: () => import('@/layout/Layout.vue'),
-    meta: { title: '紧急事件', icon: 'el-icon-warning' },
+    meta: { title: '紧急事件', icon: 'el-icon-warning',role:['userLogin','staffLogin','staffLogin'] },
     children: [{
       path:'/jinjishijian/shijianliebiao',
       meta: { title: '事件列表',  },
@@ -110,7 +110,7 @@ export const menuRoutes = [
   {
     path: '/huodongguanli',
     component: () => import('@/layout/Layout.vue'),
-    meta: { title: '活动管理', icon: 'el-icon-s-flag' },
+    meta: { title: '活动管理', icon: 'el-icon-s-flag' ,role:['userLogin','staffLogin','staffLogin']},
     children:[{
       path:'/huodongguanli/huodongliebiao',
       meta: { title: '活动日历',  },
