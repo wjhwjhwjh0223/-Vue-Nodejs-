@@ -38,9 +38,19 @@
           <el-form-item label="紧急联系方式" prop="contacts">
             <el-input v-model="form.contacts" placeholder="请输入紧急联系方式"></el-input>
           </el-form-item>
+          <el-form-item label="头像">
+            <el-upload class="avatar-uploader" action="http://localhost:3000/file"
+              :show-file-list="false"
+              :on-success="success">
+              <!-- 上传成功了就显示图片 -->
+              <img v-if="form.avatar" :src="form.avatar" class="avatar">
+              <!-- 上传之前就显示加号 -->
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
           <el-form-item class="form-actions">
             <el-button type="primary" @click="submitForm">提交</el-button>
-            <el-button type="default" @click="resetForm">重置</el-button> 
+            <el-button type="default" @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -50,7 +60,6 @@
 
 <script>
 import axios from 'axios';
-
 export default {
   data() {
     var checkConfirmPassword = (rule, value, callback) => {
@@ -59,7 +68,6 @@ export default {
       }
       callback();
     };
-
     return {
       form: {
         account: '',
@@ -70,7 +78,8 @@ export default {
         age: null,
         address: '',
         phone: '',
-        contacts: ''
+        contacts: '',
+        avatar: ""
       },
       rules: {
         account: [
@@ -100,7 +109,6 @@ export default {
         ],
         phone: [
           { required: true, message: '请输入电话', trigger: 'blur' },
-          { type: 'number', message: '电话必须为数字值', trigger: 'blur' }
         ],
         contacts: [
           { required: true, message: '请输入紧急联系方式', trigger: 'blur' },
@@ -109,6 +117,11 @@ export default {
     };
   },
   methods: {
+    //图片上传成功
+    success(res){
+      //console.log(res)
+      this.form.avatar = res.data;
+    },
     //新增
     resetForm() {
       if (this.$refs.form) {
@@ -116,27 +129,27 @@ export default {
       }
     },
     async submitForm() {
-    try {
-      const response = await axios.post('http://localhost:3000/generaAdd', this.form);
-      if (response.data.code === 1) {
-        this.$message.success(response.data.msg || '添加成功');
-        this.$refs.form.resetFields();
-      } else {
-        this.$message.error(response.data.msg || '添加失败');
-      }
-    } catch (error) {
-      if (error.response) {
-        // 后端返回了错误响应（状态码不是 2xx）
-        const errorMsg = error.response.data && error.response.data.msg
-          ? error.response.data.msg
-          : '添加失败';
-        this.$message.error(errorMsg);
-      } else {
-        // 没有响应（网络或其他错误）
-        this.$message.error('网络错误');
+      try {
+        const response = await axios.post('http://localhost:3000/generaAdd', this.form);
+        if (response.data.code === 1) {
+          this.$message.success(response.data.msg || '添加成功');
+          this.$refs.form.resetFields();
+        } else {
+          this.$message.error(response.data.msg || '添加失败');
+        }
+      } catch (error) {
+        if (error.response) {
+          // 后端返回了错误响应（状态码不是 2xx）
+          const errorMsg = error.response.data && error.response.data.msg
+            ? error.response.data.msg
+            : '添加失败';
+          this.$message.error(errorMsg);
+        } else {
+          // 没有响应（网络或其他错误）
+          this.$message.error('网络错误');
+        }
       }
     }
-  }
   }
 };
 </script>
@@ -176,5 +189,32 @@ export default {
 
 .form-actions {
   text-align: center;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

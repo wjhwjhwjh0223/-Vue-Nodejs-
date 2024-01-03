@@ -60,7 +60,7 @@ export default {
           apiPath = 'http://localhost:3000/staffLogin';
           break;
         case 'generalLogin':
-          apiPath = 'http://localhost:3000/staffLogin';
+          apiPath = 'http://localhost:3000/generalLogin';
           break;
         default:
           Message.error('请选择角色');

@@ -19,6 +19,11 @@
                 </el-table-column>
                 <el-table-column prop="name" label="姓名">
                 </el-table-column>
+                <el-table-column  label="头像">
+                    <template #default="{row}">
+                        <img width="50" height="50" :src="row.avatar" >
+                    </template>
+                </el-table-column>
                 <el-table-column prop="age" label="年龄">
                 </el-table-column>
                 <el-table-column prop="sex" label="性别">

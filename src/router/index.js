@@ -199,6 +199,69 @@ export const menuRoutes = [
       meta: { title: '我的评价'},
       component: () => import('@/views/staff/huodongzhongxing/wodepingjia.vue')
     }]
+  },
+  //老人信息模块
+  {
+    path:'/general/gerenzhongxin',
+    component: () => import('@/layout/Layout.vue'),
+    meta:{title:'个人中心',icon:'el-icon-user-solid',role:['generalLogin']},
+    children:[{
+      path:'/general/gerenzhongxin/wodexinxi',
+      meta: { title: '个人信息'},
+      component: () => import('@/views/general/gerenzhongxin/wodexinxi.vue'),
+    },
+    {
+      path:'/general/gerenzhongxin/mimaxiugai',
+      meta: { title: '密码修改'},
+      component: () => import('@/views/general/gerenzhongxin/mimaxiugai.vue')
+    }]
+  },
+  //老人服务模块
+  {
+    path:'general/yuyuefuwu',
+    component: () => import('@/layout/Layout.vue'),
+    meta:{title:'预约服务',icon:'el-icon-s-order',role:['generalLogin']},
+    children:[{
+      path:'/general/yuyuefuwu/shenqingyuyue',
+      meta: { title: '申请预约'},
+      component: () => import('@/views/general/yuyuefuwu/shenqingyuyue.vue')
+    },
+    {
+      path:'/general/yuyuefuwu/yuyueguanli',
+      meta: { title: '预约管理'},
+      component: () => import('@/views/general/yuyuefuwu/yuyueguanli.vue')
+    }]  
+  },
+  //老人紧急救助模块
+  {
+    path:'general/jinjiqiuzhu',
+    component: () => import('@/layout/Layout.vue'),
+    meta:{title:'紧急求助',icon:'el-icon-phone-outline',role:['generalLogin']},
+    children:[{
+      path:'/general/jinjiqiuzhu/faqijiuzhu',
+      meta: { title: '发起求助'},
+      component: () => import('@/views/general/jinjiqiuzhu/faqiqiuzhu.vue')
+    },
+    {
+      path:'/general/jinjiqiuzhu/jinjiguanli',
+      meta: { title: '求助管理'},
+      component: () => import('@/views/general/jinjiqiuzhu/qiuzhuguanli.vue')
+    }]
+  },
+  {
+    path:'general/huodongzhongxin',
+    component: () => import('@/layout/Layout.vue'),
+    meta:{title:'活动中心',icon:'el-icon-s-promotion',role:['generalLogin']},
+    children:[{
+      path:'/general/huodongzhongxin/huodongliebiao',
+      meta: { title: '活动列表'},
+      component: () => import('@/views/general/huodongzhongxin/huodongliebiao.vue')
+    },
+    {
+      path:'/general/huodongzhongxin/huodongguanli',
+      meta: { title: '活动管理'},
+      component: () => import('@/views/general/huodongzhongxin/huodongguanli.vue')
+    }]
   }
   
 ]
