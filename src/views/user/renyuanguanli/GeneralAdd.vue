@@ -38,7 +38,7 @@
           <el-form-item label="紧急联系方式" prop="contacts">
             <el-input v-model="form.contacts" placeholder="请输入紧急联系方式"></el-input>
           </el-form-item>
-          <el-form-item label="头像">
+          <el-form-item label="头像" prop="avatar">
             <el-upload class="avatar-uploader" action="http://localhost:3000/file"
               :show-file-list="false"
               :on-success="success">
@@ -79,7 +79,7 @@ export default {
         address: '',
         phone: '',
         contacts: '',
-        avatar: ""
+        avatar: ''
       },
       rules: {
         account: [
@@ -122,10 +122,11 @@ export default {
       //console.log(res)
       this.form.avatar = res.data;
     },
-    //新增
+    //重置
     resetForm() {
       if (this.$refs.form) {
         this.$refs.form.resetFields();
+        this.form.avatar ='';
       }
     },
     async submitForm() {
@@ -134,6 +135,7 @@ export default {
         if (response.data.code === 1) {
           this.$message.success(response.data.msg || '添加成功');
           this.$refs.form.resetFields();
+          this.resetForm();
         } else {
           this.$message.error(response.data.msg || '添加失败');
         }

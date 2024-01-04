@@ -113,10 +113,11 @@ export default {
       //console.log(res)
       this.form.avatar = res.data;
     },
-    
+    //重置
     resetForm() {
       if (this.$refs.form) {
         this.$refs.form.resetFields();
+        this.form.avatar = '';
       }
     },
     //新增
