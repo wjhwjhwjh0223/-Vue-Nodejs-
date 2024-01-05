@@ -7,11 +7,11 @@
 
       <div style="margin: 20px;"></div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-        <el-form-item label="用户ID" prop="userId">
+        <!-- <el-form-item label="用户ID" prop="userId">
           <el-input v-model="ruleForm.userId" autocomplete="off" placeholder="请输入用户ID"></el-input>
-        </el-form-item>
-        <el-form-item label="旧密码" prop="oldPass">
-          <el-input type="password" v-model="ruleForm.oldPass" autocomplete="off" placeholder="请输入旧密码"></el-input>
+        </el-form-item> -->
+        <el-form-item label="旧密码" prop="password">
+          <el-input type="password" v-model="ruleForm.password" autocomplete="off" placeholder="请输入旧密码"></el-input>
         </el-form-item>
         <el-form-item label="新密码" prop="newPass">
           <el-input type="password" v-model="ruleForm.newPass" autocomplete="new-password"
@@ -27,10 +27,12 @@
         </el-form-item>
       </el-form>
     </el-card>
-  </div>  
+  </div>
 </template>
   
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     const validateNewPass = (rule, value, callback) => {
@@ -54,16 +56,16 @@ export default {
     };
     return {
       ruleForm: {
-        userId: '',
-        oldPass: '',
+        id: '',
+        password: '',
         newPass: '',
         checkNewPass: ''
       },
       rules: {
-        userId: [
-          { required: true, message: '请输入用户ID', trigger: 'blur' }
-        ],
-        oldPass: [
+        // userId: [
+        //   { required: true, message: '请输入用户ID', trigger: 'blur' }
+        // ],
+        password: [
           { required: true, message: '请输入旧密码', trigger: 'blur' }
         ],
         newPass: [
@@ -76,20 +78,29 @@ export default {
     };
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+    async submitForm(formName) {
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {
-
-          console.log('密码更新请求', this.ruleForm);
-
-        } else {
-          console.log('提交时出现错误，请检查输入');
+            let response = await axios({
+              method: 'post',
+              url: 'http://localhost:3000/userChangePassWord',
+              data: this.ruleForm
+            });
+            if (response.data.code === 1) {
+              this.$message({ type: 'success', message: '修改成功!' });
+              this.resetForm('ruleForm')
+            } else {
+              this.$message({ type: 'error', message: response.data.msg || '修改失败!' });
+            }
         }
       });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    }
+    },
+  },
+  created() {
+    this.ruleForm.id = localStorage.getItem('userId')
   }
 }
 </script>

@@ -2,7 +2,7 @@
   <div class="not-found">
     <h1 class="animate-title">404</h1>
     <p class="animate-text">抱歉，您访问的页面不存在。</p>
-    <router-link to="/home" class="animate-button">回到首页</router-link>
+    <router-link to="/login" class="animate-button">回到首页</router-link>
   </div>
 </template>
 
