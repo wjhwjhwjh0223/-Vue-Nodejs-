@@ -4,16 +4,83 @@
             <div slot="header">
                 <span>活动列表</span>
             </div>
+            <el-table :data="activityList" style="width: 100%">
+                <el-table-column prop="name" label="活动名称"></el-table-column>
+                <el-table-column prop="description" label="活动描述"></el-table-column>
+                <el-table-column prop="time" label="活动时间" :formatter="row => formatDateTime(row.time)">
+                </el-table-column>
+                <el-table-column prop="location" label="活动地点"></el-table-column>
+                <el-table-column prop="activityType" label="活动类型"></el-table-column>
+                <el-table-column prop="participantCount" label="参加人数"></el-table-column>
+                <el-table-column label="负责人" :formatter="renderStaffName">
+                </el-table-column>
+                <el-table-column label="活动状态">
+                    <template slot-scope="scope">
+                        <span
+                            :style="{ backgroundColor: statusColorMap[scope.row.status], color: 'white', borderRadius: '10px', padding: '3px 10px', fontSize: '0.8em' }">
+                            {{ scope.row.status }}
+                        </span>
+                    </template>
+                </el-table-column>
+
+            </el-table>
         </el-card>
     </div>
 </template>
-
+  
 <script>
-    export default {
-        
-    }
+import axios from 'axios';
+
+export default {
+    data() {
+        return {
+            // 存储活动列表
+            activityList: [],
+            statusColorMap: {
+                '计划中': 'blue',
+                '正在进行': 'green',
+                '活动结束': 'grey',
+                '活动取消': 'red'
+            },
+        };
+    },
+    methods: {
+        // 获取活动列表
+        async fetchActivityList() {
+            try {
+                const response = await axios.get('http://localhost:3000/getactivityList');
+                if (response.data.code === 1) {
+                    this.activityList = response.data.data.list;
+                } else {
+                    this.$message.error('加载活动列表失败');
+                }
+            } catch (error) {
+                console.error('请求失败:', error);
+                this.$message.error('请求失败');
+            }
+        },
+        // 渲染负责人姓名
+        renderStaffName(row) {
+            return row.staff ? row.staff.name : '暂无';
+        }, formatDateTime(dateTime) {
+            const date = new Date(dateTime);
+            return new Intl.DateTimeFormat('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            }).format(date);
+        },
+    },
+    created() {
+        this.fetchActivityList(); // 组件创建时获取活动列表
+    },
+};
 </script>
+  
+  
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

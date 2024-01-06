@@ -193,12 +193,7 @@ export const menuRoutes = [
       path:'/staff/huodongliebiao',
       meta: { title: '活动列表'},
       component: () => import('@/views/staff/huodongzhongxing/huodongliebiao.vue')
-    },
-    {
-      path:'/staff/wodepingjia',
-      meta: { title: '我的评价'},
-      component: () => import('@/views/staff/huodongzhongxing/wodepingjia.vue')
-    }]
+    },]
   },
   //老人信息模块
   {

@@ -24,9 +24,9 @@
                 <el-form-item label="活动类型">
                     <el-radio-group v-model="form.activityType">
                         <el-radio label="社交活动">社交活动</el-radio>
-                        <el-radio label="教育活动">教育活动</el-radio>
-                        <el-radio label="教育活动">教育活动</el-radio>
-                        <el-radio label="娱乐活动">娱乐活动</el-radio>
+                        <el-radio label="教育活动"></el-radio>
+                        <el-radio label="音乐和舞蹈">音乐和舞蹈</el-radio>
+                        <el-radio label="旅游和户外活动">旅游和户外活动</el-radio>
                         <el-radio label="健康与养生">健康与养生</el-radio>
                         <el-radio label="体育活动">体育活动</el-radio>
                         <el-radio label="其他">其他</el-radio>
@@ -71,7 +71,7 @@ export default {
                 if (response.data.code === 1) {
                     
                     this.$message({ type: 'success', message: '创建成功!' });
-                    this.resetForm('form');
+                    this.resetForm();
                 } else {
                     this.$message({ type: 'error', message: response.data.msg || '创建失败!' });
                 }
@@ -80,8 +80,16 @@ export default {
                 this.$message({ type: 'error', message: error.response.data.msg || '请求失败!' });
             }
         },
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
+        resetForm() {
+           this.form={
+            staffId: '',
+                name: '',
+                description: '',
+                time: '',
+                location: '',
+                activityType: '',
+                participantCount: '',
+           };
         },
     },
     created() {
