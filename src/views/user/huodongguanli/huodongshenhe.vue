@@ -9,19 +9,24 @@
             @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55">
             </el-table-column>
-            <el-table-column label="日期" width="120">
-                <template slot-scope="scope">{{ scope.row.date }}</template>
+            <el-table-column prop="time" label="活动时间" :formatter="row => formatDateTime(row.time)">
             </el-table-column>
-            <el-table-column prop="activityname" label="活动名称" width="120">
+            <el-table-column prop="name" label="活动名称">
             </el-table-column>
-            <el-table-column prop="address" label="活动地址" show-overflow-tooltip>
+            <el-table-column prop="description" label="活动简介">
             </el-table-column>
-            <el-table-column prop="activitytype" label="活动类型" width="120">
+            <el-table-column prop="location" label="活动地址" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="participantCount" label="活动人数" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="activityType" label="活动类型">
+            </el-table-column>
+            <el-table-column label="负责人" :formatter="renderStaffName">
             </el-table-column>
             <el-table-column label="活动状态" width="120">
                 <template slot-scope="scope">
-                    <el-tag :type="getStatusTagType(scope.row.activitystatus)">
-                        {{ scope.row.activitystatus }}
+                    <el-tag :type="getStatusTagType(scope.row.status)">
+                        {{ scope.row.status }}
                     </el-tag>
                 </template>
             </el-table-column>
@@ -35,57 +40,41 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
     data() {
         return {
-            tableData: [{
-                date: '2016-05-03',
-                activityname: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄',
-                activitytype: '美食/餐厅线上活动',
-                activitystatus: '进行中'
-            }, {
-                date: '2016-05-03',
-                activityname: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄',
-                activitytype: '美食/餐厅线上活动',
-                activitystatus: '待审核'
-            }, {
-                date: '2016-05-03',
-                activityname: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄',
-                activitytype: '美食/餐厅线上活动',
-                activitystatus: '已完成'
-            }, {
-                date: '2016-05-03',
-                activityname: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄',
-                activitytype: '美食/餐厅线上活动',
-                activitystatus: '待审核'
-            }, {
-                date: '2016-05-03',
-                activityname: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄',
-                activitytype: '美食/餐厅线上活动',
-                activitystatus: '待审核'
-            }, {
-                date: '2016-05-03',
-                activityname: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄',
-                activitytype: '美食/餐厅线上活动',
-                activitystatus: '待审核'
-            }, {
-                date: '2016-05-03',
-                activityname: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄',
-                activitytype: '美食/餐厅线上活动',
-                activitystatus: '待审核'
-            }],
+            tableData: [],
             multipleSelection: []
         }
     },
-
-    methods: {
+    methods:
+    //获取活动列表以及状态
+    {
+        renderStaffName(row) {
+            return row.staff ? row.staff.name : '暂无';
+        },
+        formatDateTime(dateTime) {
+            const date = new Date(dateTime);
+            return new Intl.DateTimeFormat('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            }).format(date);
+        },
+        async getactivity() {
+            let res = await axios({
+                url: 'http://localhost:3000/getactivityList',
+                method: 'get',
+            })
+            console.log(res, '---------------')
+            this.tableData = res.data.data.list
+            console.log(this.tableData)
+        },
         toggleSelection(rows) {
             if (rows) {
                 rows.forEach(row => {
@@ -98,23 +87,40 @@ export default {
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
+        async updateRowStatus(row) {
+            try {
+                // 发送POST请求到后端更新状态的接口
+                let response = await axios.post('http://localhost:3000/updateActivityStauts', {
+                    id: row.id, // 假设后端根据id识别需要更新的活动
+                    status: row.activitystatus // 新的活动状态
+                });
+
+                // 检查响应，确认后端操作成功
+                if (response.data && response.data.code === 1) {
+                    this.$message.success('状态更新成功！');
+                    this.getactivity();
+                } else {
+                    this.$message.error('状态更新失败：' + response.data.msg);
+                }
+            } catch (error) {
+                // 错误处理
+                this.$message.error('请求失败：' + error.message);
+            }
+        },
         approveSelection() {
             this.multipleSelection.forEach(row => {
-                row.activitystatus = '已同意'; // 更新活动状态
-                this.updateRowStatus(row);
+                row.activitystatus = '已同意'; // 设置新状态
+                this.updateRowStatus(row); // 调用更新状态的方法
             });
             this.refreshTable();
         },
 
         rejectSelection() {
             this.multipleSelection.forEach(row => {
-                row.activitystatus = '已拒绝'; // 更新活动状态
-                this.updateRowStatus(row);
+                row.activitystatus = '已拒绝'; // 设置新状态
+                this.updateRowStatus(row); // 调用更新状态的方法
             });
             this.refreshTable();
-        }, updateRowStatus(row) {
-            // 这里可以添加发送请求到服务器的代码，例如使用 axios 更新数据库中的活动状态
-            // axios.post('/update-status', { id: row.id, status: row.activitystatus })
         },
 
         refreshTable() {
@@ -123,21 +129,25 @@ export default {
             this.$refs.multipleTable.clearSelection();
         }, getStatusTagType(status) {
             switch (status) {
-                case '进行中':
-                    return 'success';
-                case '待审核':
-                    return 'warning';
-                case '已完成':
+                case '计划中':
                     return 'info';
                 case '已同意':
+                    return 'success';
+                case '已完成':
                     return 'primary';
                 case '已拒绝':
-                    return 'danger';
+                    return 'warning';
                 default:
-                    return '';
+                    return 'default';
             }
         }
+
+
+    },
+    async created() {
+        this.getactivity()
     }
+
 }
 </script>
 

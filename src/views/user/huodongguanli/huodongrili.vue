@@ -19,89 +19,85 @@
     </el-calendar>
     <!-- 活动详情的对话框 -->
     <el-dialog :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
-      <h2>{{ currentEvent.activityname }}</h2>
-      <p>{{ currentEvent.date }}</p>
-      <p>{{ currentEvent.address }}</p>
-      <p>{{ currentEvent.activitytype }}</p>
-      <p>{{ currentEvent.activitystatus }}</p>
+      <h2>{{ currentEvent.name }}</h2>
+      <p>{{ currentEvent.time }}</p>
+      <p>{{ currentEvent.location }}</p>
+      <p>{{ currentEvent.activityType }}</p>
+      <p>{{ currentEvent.status }}</p>
+      <p>负责人: {{ currentEvent.staffName }}</p>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
       value: new Date(), // 当前选中的日期
       tableData: [
-        {
-          
-          date: '2023-12-25',
-          activityname: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          activitytype: '美食/餐厅线上活动',
-          activitystatus: '进行中'
-        }, {
-          
-          date: '2023-12-26',
-          activityname: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          activitytype: '美食/餐厅线上活动',
-          activitystatus: '待审核'
-        }, {
-          
-          date: '2016-05-03',
-          activityname: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          activitytype: '美食/餐厅线上活动',
-          activitystatus: '已完成'
-        }, {
-          
-          date: '2016-05-03',
-          activityname: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          activitytype: '美食/餐厅线上活动',
-          activitystatus: '待审核'
-        }, {
-          
-          date: '2016-05-03',
-          activityname: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          activitytype: '美食/餐厅线上活动',
-          activitystatus: '待审核'
-        }, {
-          
-          date: '2016-05-03',
-          activityname: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          activitytype: '美食/餐厅线上活动',
-          activitystatus: '待审核'
-        }, {
-          
-          date: '2016-05-03',
-          activityname: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          activitytype: '美食/餐厅线上活动',
-          activitystatus: '待审核'
-        }
       ],
       dialogVisible: false,
-      currentEvent: {},
+      currentEvent: {
+        name: '',
+        time: '',
+        location: '',
+        activityType: '',
+        status: '',
+        staffName: '', // 添加负责人名称属性
+      },
     };
   },
   methods: {
     getEvents(date) {
       const dateString = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-      return this.tableData.filter(event => event.date === dateString);
+      //console.log(date)
+      return this.tableData.filter(event => {
+        // 首先检查 event 是否存在
+        if (!event) {
+          console.warn('Event object is missing:', event);
+          return false;
+        }
+        // 然后检查 event.date 是否存在
+        if (!event.time) {
+          console.warn('Event date property is missing:', event);
+          return false;
+        }
+        // 接着检查 event.date 是否可以转换为合法的日期对象
+        const eventDateObj = new Date(event.time);
+        if (isNaN(eventDateObj.getTime())) {
+          console.warn('Event date is not a valid date:', event);
+          return false;
+        }
+        // 最后将事件的日期时间转换为 YYYY-MM-DD 格式
+        const eventDate = eventDateObj.toISOString().split('T')[0];
+        return eventDate === dateString;
+      });
     },
     showEventDetail(event) {
-      this.currentEvent = event;
+      this.currentEvent = {
+        ...event, // 复制所有已有的活动信息
+        staffName: event.staff ? event.staff.name : '无', // 添加负责人的名字，若无负责人则设为'无'
+      };
       this.dialogVisible = true;
     },
     handleClose(done) {
       this.dialogVisible = false;
+    },
+    async getactivity() {
+      let res = await axios({
+        url: 'http://localhost:3000/getactivityList',
+        method: 'get',
+      })
+      console.log(res, '---------------')
+      this.tableData = res.data.data.list
+      console.log(this.tableData)
     }
   },
+  async created() {
+    this.getactivity()
+  }
 };
 </script>
 

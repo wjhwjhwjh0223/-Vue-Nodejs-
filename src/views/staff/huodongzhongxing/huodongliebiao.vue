@@ -22,8 +22,10 @@
                         </span>
                     </template>
                 </el-table-column>
-
             </el-table>
+            <el-pagination @current-change="pagechange" background layout="prev, pager, next" :total="total"
+                :page-size="pagesize">
+            </el-pagination>
         </el-card>
     </div>
 </template>
@@ -36,6 +38,9 @@ export default {
         return {
             // 存储活动列表
             activityList: [],
+            pagenumber: 1,
+            pagesize: 5,
+            total: this.total,
             statusColorMap: {
                 '计划中': 'blue',
                 '正在进行': 'green',
