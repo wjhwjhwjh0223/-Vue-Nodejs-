@@ -90,19 +90,19 @@ export default {
     },
 
         // 获取活动列表
-        async fetchActivityList() {
-            try {
-                const response = await axios.get('http://localhost:3000/getactivityList');
-                if (response.data.code === 1) {
-                    this.activityList = response.data.data.list;
-                } else {
-                    this.$message.error('加载活动列表失败');
-                }
-            } catch (error) {
-                console.error('请求失败:', error);
-                this.$message.error('请求失败');
+    async fetchActivityList() {
+        try {
+            const response = await axios.get('http://localhost:3000/getactivityList');
+            if (response.data.code === 1) {
+                this.activityList = response.data.data.list;
+               } else {
+                this.$message.error('加载活动列表失败');
             }
-        },
+        } catch (error) {
+            console.error('请求失败:', error);
+            this.$message.error('请求失败');
+        }
+     },
         // 渲染负责人姓名
         renderStaffName(row) {
             return row.staff ? row.staff.name : '暂无';

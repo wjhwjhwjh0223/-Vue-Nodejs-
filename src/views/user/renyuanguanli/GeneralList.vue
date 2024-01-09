@@ -147,7 +147,7 @@ export default {
             console.log("需要把以下的数据发给后端")
             console.log(this.pagenumber, this.pagesize, this.params.username)
             this.getparms()
-            // 在这里执行搜索逻辑
+            
         },
         resetSearch() {
             // 重置 params 对象

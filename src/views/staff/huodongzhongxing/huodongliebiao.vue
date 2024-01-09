@@ -43,9 +43,9 @@ export default {
             total: this.total,
             statusColorMap: {
                 '计划中': 'blue',
-                '正在进行': 'green',
+                '已同意': 'green',
                 '活动结束': 'grey',
-                '活动取消': 'red'
+                '已拒绝': 'red'
             },
         };
     },
