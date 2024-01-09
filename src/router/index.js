@@ -34,6 +34,19 @@ export const menuRoutes = [
       }
     ]
   },
+  //数据中心模块
+  {
+    path:'/data',
+    component:()=>import('@/layout/Layout.vue'),
+    meta:{title:'数据中心',icon:'el-icon-s-data' ,role:['userLogin']},
+    children:[
+      {
+        path:'/data',
+        meta:{title:'数据中心',menu:true},
+        component:()=>import('@/views/data/Data.vue')
+      }
+    ]
+  },
 
   // 用户功能模块
   {
