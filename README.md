@@ -17,4 +17,4 @@ yarn build
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-这是我的毕业设计基于Vue和Nodejs的社区养老服务平台设计与实现
+这是我的毕业设计基于Vue和Nodejs的社区养老服务平台设计与实现的前端vue代码
