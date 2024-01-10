@@ -7,8 +7,11 @@
       <el-table :data="userActivities" style="width: 100%">
         <el-table-column prop="name" label="活动名称"></el-table-column>
         <el-table-column prop="description" label="活动描述"></el-table-column>
-        <el-table-column prop="time" label="活动时间"></el-table-column>
-        <el-table-column prop="location" label="活动地点"></el-table-column>
+        <el-table-column prop="time" label="活动时间">
+          <template slot-scope="scope">
+            {{ formatDate(scope.row.time) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="status" label="活动状态"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -19,19 +22,32 @@
     </el-card>
     <!-- 活动详情模态框 -->
     <el-dialog title="活动详情" :visible.sync="detailsDialogVisible" width="50%">
-      <div v-if="selectedActivity">
-        <p>活动名称：{{ selectedActivity.name }}</p>
-        <p>活动描述：{{ selectedActivity.description }}</p>
-        <p>活动类型：{{ selectedActivity.activityType }}</p>
-        <p>活动时间：{{ selectedActivity.time }}</p>
-        <p>活动地点：{{ selectedActivity.location }}</p>
-        <p>活动状态：{{ selectedActivity.status }}</p>
-      </div>
+      <el-descriptions v-if="selectedActivity" border :column="1">
+        <el-descriptions-item label="活动名称">{{ selectedActivity.name }}</el-descriptions-item>
+        <el-descriptions-item label="活动描述">{{ selectedActivity.description }}</el-descriptions-item>
+        <el-descriptions-item label="活动类型">{{ selectedActivity.activityType }}</el-descriptions-item>
+        <el-descriptions-item label="活动时间">{{ formatDate(selectedActivity.time) }}</el-descriptions-item>
+        <el-descriptions-item label="活动地点">{{ selectedActivity.location }}</el-descriptions-item>
+        <el-descriptions-item label="活动状态">{{ selectedActivity.status }}</el-descriptions-item>
+         <!-- 参加名单的展示 -->
+        <el-descriptions-item label="参与人员"> <div>
+          <ul>
+            <template v-if="participantList.length > 0">
+              <li v-for="participant in participantList" :key="participant.general.id">
+                姓名：{{ participant.general.name }} - 电话：{{ participant.general.phone }}
+              </li>
+            </template>
+            <li v-else>还没有人报名参加</li>
+          </ul>
+        </div>
+      </el-descriptions-item>
+      </el-descriptions>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="detailsDialogVisible = false">取消</el-button>
+        <el-button @click="detailsDialogVisible = false">关闭</el-button>
         <el-button type="danger" @click="leaveActivity(selectedActivity)">退出活动</el-button>
       </span>
     </el-dialog>
+
   </div>
 </template>
   
@@ -43,44 +59,67 @@ export default {
     return {
       userActivities: [],
       detailsDialogVisible: false,
-      selectedActivity: null
+      selectedActivity: null,
+      participantList: [], // 存储参加名单的数据
     };
   },
   methods: {
-    viewDetails(activity) {
+    async fetchParticipantList(activityId) {
+      try {
+        const response = await axios.get('http://localhost:3000/obtainTheListOfParticipantsInTheEvent', {
+          params: { activityId: activityId }
+        });
+        if (response.data && response.data.code === 1) {
+          this.participantList = response.data.data.list; // 将名单数据赋值给participantList
+          console.log('Participant list:', this.participantList);
+        } else {
+          throw new Error(response.data.msg || '获取名单失败');
+        }
+      } catch (error) {
+        console.error('Error fetching participant list:', error);
+        this.participantList = []; // 出错时重置参加名单
+      }
+    },
+    async viewDetails(activity) {
       this.selectedActivity = activity;
+      console.log(activity.id)
+      await this.fetchParticipantList(activity.id); // 修改这里，传入活动ID
       this.detailsDialogVisible = true;
     },
-
+    formatDate(date) {
+      if (!date) return '';
+      const d = new Date(date);
+      return d.toLocaleString(); // 或者使用您选择的日期格式化库，比如 moment.js
+    },
     async leaveActivity(activity) {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      console.error('用户未登录');
-      return;
-    }
-    try {
-      // 发送退出活动的请求
-      const response = await axios.post('http://localhost:3000/activityExit', {
-        generalId: userId,         // 用户ID
-        activityId: activity.id    // 活动ID，从选定的活动中获取
-      });
-
-      // 根据响应结果进行处理
-      if (response.data && response.data.code === 1) {
-        this.$message.success('退出活动成功');
-        // 从列表中移除退出的活动
-        this.userActivities = this.userActivities.filter(a => a.id !== activity.id);
-      } else {
-        // 如果响应中的code不是1，处理错误情况
-        this.$message.error('退出活动失败：' + response.data.msg);
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        console.error('用户未登录');
+        return;
       }
-    } catch (error) {
-      // 网络或其他错误
-      this.$message.error('退出活动时出现错误');
-    }
-    // 不论成功与否，关闭模态框
-    this.detailsDialogVisible = false;
-  },
+      try {
+        // 发送退出活动的请求
+        const response = await axios.post('http://localhost:3000/activityExit', {
+          generalId: userId,         // 用户ID
+          activityId: activity.id    // 活动ID，从选定的活动中获取
+        });
+
+        // 根据响应结果进行处理
+        if (response.data && response.data.code === 1) {
+          this.$message.success('退出活动成功');
+          // 从列表中移除退出的活动
+          this.userActivities = this.userActivities.filter(a => a.id !== activity.id);
+        } else {
+          // 如果响应中的code不是1，处理错误情况
+          this.$message.error('退出活动失败：' + response.data.msg);
+        }
+      } catch (error) {
+        // 网络或其他错误
+        this.$message.error('退出活动时出现错误');
+      }
+      // 不论成功与否，关闭模态框
+      this.detailsDialogVisible = false;
+    },
     //获取当前用户的活动列表
     async fetchActivityList() {
       const userId = localStorage.getItem('userId');
@@ -115,6 +154,6 @@ export default {
   }
 };
 </script>
-  
+
 <style scoped></style>
   
