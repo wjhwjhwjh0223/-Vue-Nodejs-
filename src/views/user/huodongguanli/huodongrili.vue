@@ -22,7 +22,7 @@
     </el-calendar>
     <el-dialog :visible.sync="dialogVisible" width="30%" :before-close="handleClose" class="event-details-dialog">
       <h2 class="event-title">{{ currentEvent.name }}</h2>
-      <p class="event-time">{{ currentEvent.time }}</p>
+      <p class="event-time">{{ formatDateTime(currentEvent.time) }}</p>
       <p class="event-location">{{ currentEvent.location }}</p>
       <p class="event-type">{{ currentEvent.activityType }}</p>
       <p class="event-status">{{ currentEvent.status }}</p>
@@ -45,7 +45,7 @@
 
 <script>
 import axios from 'axios';
-
+import dayjs from 'dayjs';
 export default {
   data() {
     return {
@@ -78,6 +78,9 @@ export default {
   },
 
   methods: {
+    formatDateTime(dateTime) {
+      return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
+        },
     getEvents(date) {
       const dateString = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
       //console.log(date)

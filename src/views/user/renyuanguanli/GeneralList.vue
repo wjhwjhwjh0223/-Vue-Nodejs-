@@ -37,9 +37,9 @@
                 </el-table-column>
                 <el-table-column prop="contacts" label="紧急联系人">
                 </el-table-column>
-                <el-table-column prop="ctime" label="创建日期" width="120">
+                <el-table-column prop="ctime" label="创建日期" width="180" :formatter="formatDateTime">
                 </el-table-column>
-                <el-table-column prop="utime" label="更新日期" width="120">
+                <el-table-column prop="utime" label="更新日期" width="180" :formatter="formatDateTime">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="100">
                     <template slot-scope="scope">
@@ -89,6 +89,7 @@
 </template>
 
 <script>
+import dayjs from 'dayjs';
 import axios from 'axios';
 export default {
     async created() {
@@ -108,6 +109,9 @@ export default {
         };
     },
     methods: {
+        formatDateTime(row, column, cellValue) {
+            return dayjs(cellValue).format('YYYY-MM-DD HH:mm:ss'); // 使用 dayjs 格式化日期
+        },
         editData(rowData) {
             this.editFormData = { ...rowData }; // 填充表单数据
             this.editDialogVisible = true; // 显示弹窗

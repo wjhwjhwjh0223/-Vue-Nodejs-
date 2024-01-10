@@ -32,7 +32,7 @@
   
 <script>
 import axios from 'axios';
-
+import dayjs from 'dayjs';
 export default {
     data() {
         return {
@@ -68,17 +68,8 @@ export default {
         renderStaffName(row) {
             return row.staff ? row.staff.name : '暂无';
         }, formatDateTime(dateTime) {
-            const date = new Date(dateTime);
-            return new Intl.DateTimeFormat('zh-CN', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            }).format(date);
-        },
+      return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
+        }
     },
     created() {
         this.fetchActivityList(); // 组件创建时获取活动列表

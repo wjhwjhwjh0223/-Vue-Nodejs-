@@ -88,14 +88,16 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.login-wrapper {
+<style lang="scss" scoped>.login-wrapper {
   width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #2d3a4b;
+  background-image: url('D:\\goge dowlowde\\9e619171-b40e-458c-833d-7736637306fd.webp'); 
+  background-size: cover; // 确保图片覆盖整个区域
+  background-position: center; // 图片居中显示
+}
 
   .login-form {
     width: 500px;
@@ -122,5 +124,5 @@ export default {
   ::v-deep .el-input input {
     color: #fff;
   }
-}
+
 </style>

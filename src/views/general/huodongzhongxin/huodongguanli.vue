@@ -53,7 +53,7 @@
   
 <script>
 import axios from 'axios';
-
+import dayjs from 'dayjs';
 export default {
   data() {
     return {
@@ -86,11 +86,9 @@ export default {
       await this.fetchParticipantList(activity.id); // 修改这里，传入活动ID
       this.detailsDialogVisible = true;
     },
-    formatDate(date) {
-      if (!date) return '';
-      const d = new Date(date);
-      return d.toLocaleString(); // 或者使用您选择的日期格式化库，比如 moment.js
-    },
+    formatDate(dateTime) {
+            return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
+        },
     async leaveActivity(activity) {
       const userId = localStorage.getItem('userId');
       if (!userId) {

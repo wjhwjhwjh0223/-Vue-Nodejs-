@@ -41,7 +41,7 @@
   
 <script>
 import axios from 'axios';
-
+import dayjs from 'dayjs';
 export default {
     data() {
         return {
@@ -61,63 +61,55 @@ export default {
     methods: {
         //参加活动
         // 用户点击参加活动按钮时调用
-    async joinActivity(activity) {
-      // 从localStorage获取当前用户ID
-      const userId = localStorage.getItem('userId');
-      console.log(userId);
-      console.log(activity.id);
-      if (!userId) {
-        this.$message.error('无法获取用户ID请确保已登录!');
-        return;
-      }
-      try {
-        // 调用后端接口以参加活动
-        const response = await axios.post('http://localhost:3000/participate-activity', {
-          userId: userId,
-          activityId: activity.id
-        });
-        // 根据响应处理结果
-        if (response.data.code === 1) {
-          this.$message.success('成功参加活动！');
-        } else {
-          // 后端返回错误消息
-          this.$message.error(response.data.msg);
-        }
-      } catch (error) {
-        // 处理请求错误
-        this.$message.error('参加活动请求失败，请稍后再试！');
-      }
-    },
+        async joinActivity(activity) {
+            // 从localStorage获取当前用户ID
+            const userId = localStorage.getItem('userId');
+            console.log(userId);
+            console.log(activity.id);
+            if (!userId) {
+                this.$message.error('无法获取用户ID请确保已登录!');
+                return;
+            }
+            try {
+                // 调用后端接口以参加活动
+                const response = await axios.post('http://localhost:3000/participate-activity', {
+                    userId: userId,
+                    activityId: activity.id
+                });
+                // 根据响应处理结果
+                if (response.data.code === 1) {
+                    this.$message.success('成功参加活动！');
+                } else {
+                    // 后端返回错误消息
+                    this.$message.error(response.data.msg);
+                }
+            } catch (error) {
+                // 处理请求错误
+                this.$message.error('参加活动请求失败，请稍后再试！');
+            }
+        },
 
         // 获取活动列表
-    async fetchActivityList() {
-        try {
-            const response = await axios.get('http://localhost:3000/getactivityList');
-            if (response.data.code === 1) {
-                this.activityList = response.data.data.list;
-               } else {
-                this.$message.error('加载活动列表失败');
+        async fetchActivityList() {
+            try {
+                const response = await axios.get('http://localhost:3000/getactivityList');
+                if (response.data.code === 1) {
+                    this.activityList = response.data.data.list;
+                } else {
+                    this.$message.error('加载活动列表失败');
+                }
+            } catch (error) {
+                console.error('请求失败:', error);
+                this.$message.error('请求失败');
             }
-        } catch (error) {
-            console.error('请求失败:', error);
-            this.$message.error('请求失败');
-        }
-     },
+        },
         // 渲染负责人姓名
         renderStaffName(row) {
             return row.staff ? row.staff.name : '暂无';
-        }, formatDateTime(dateTime) {
-            const date = new Date(dateTime);
-            return new Intl.DateTimeFormat('zh-CN', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            }).format(date);
-        },
+        }, 
+        formatDateTime(dateTime) {
+            return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
+        }
     },
     created() {
         this.fetchActivityList(); // 组件创建时获取活动列表
