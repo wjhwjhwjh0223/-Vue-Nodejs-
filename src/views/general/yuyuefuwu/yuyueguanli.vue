@@ -4,16 +4,84 @@
             <div slot="header">
                 <span>预约管理</span>
             </div>
+            <el-table :data="appointments" style="width: 100%">
+                <el-table-column prop="serviceType" label="服务类型"></el-table-column>
+                <el-table-column prop="serviceDescription" label="服务描述"></el-table-column>
+                <el-table-column label="预约时间">
+                    <template slot-scope="scope">
+                        {{ formatDate(scope.row.appointmentTime) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="specialRequirements" label="特殊要求"></el-table-column>
+                <el-table-column prop="status" label="状态"></el-table-column>
+                <el-table-column prop="staff.id" label="服务人员"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click="cancelAppointment(scope.row)" size="mini">取消</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
         </el-card>
     </div>
 </template>
 
 <script>
-    export default {
-        
+import axios from 'axios';
+import dayjs from 'dayjs';
+export default {
+    data() {
+        return {
+            appointments: [] // 存储预约数据
+        };
+    },
+    methods: {
+        formatDate(dateTime) {
+            return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
+        },
+        cancelAppointment(appointment) {
+            axios.post('http://localhost:3000/cancelReservationService', { id: appointment.id })
+                .then(response => {
+                    if (response.data.code === 1) {
+                        this.$message.success('预约已取消');
+                        this.getAppointments()
+                    } else {
+                        this.$message.error('取消预约失败: ' + response.data.msg);
+                    }
+                })
+                .catch(error => {
+                    this.$message.error('请求错误: ' + error);
+                });
+        },
+        //获取预约列表
+        async getAppointments() {
+            const userId = localStorage.getItem('userId');
+            try {
+                let res = await axios({
+                    url: 'http://localhost:3000/getAListOfPersonalAppointmentServices',
+                    method: 'get',
+                    params: {
+                        id: userId,
+                    }
+                });
+                // 正确引用 API 响应数据
+                if (res.data.data && Array.isArray(res.data.data.list)) {
+                    this.appointments = res.data.data.list;
+                    console.log(this.appointments);
+                } else {
+                    console.error('Expected list not found in response:', res.data);
+                    this.appointments = [];
+                }
+            } catch (error) {
+                console.error("Error fetching appointment list:", error);
+                this.appointments = [];
+            }
+        }
+    },
+    async created() {
+        // 加载预约数据
+        this.getAppointments();
     }
+}
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

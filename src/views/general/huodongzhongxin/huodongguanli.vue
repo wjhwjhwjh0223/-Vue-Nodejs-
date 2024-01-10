@@ -101,7 +101,6 @@ export default {
           generalId: userId,         // 用户ID
           activityId: activity.id    // 活动ID，从选定的活动中获取
         });
-
         // 根据响应结果进行处理
         if (response.data && response.data.code === 1) {
           this.$message.success('退出活动成功');
