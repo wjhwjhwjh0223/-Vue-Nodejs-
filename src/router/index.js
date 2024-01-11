@@ -98,7 +98,7 @@ export const menuRoutes = [
     },
     {
       path:'/fuwuguanli/fuwuzhuangtai',
-      meta: { title: '服务状态',  },
+      meta: { title: '服务列表',  },
       component: () => import('@/views/user/fuwuguanli/fuwuzhuangtai.vue')
     }
     ]

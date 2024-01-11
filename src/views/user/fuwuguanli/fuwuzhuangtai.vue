@@ -2,7 +2,7 @@
     <div>
         <el-card>
             <div slot="header">
-                <span>服务状态</span>
+                <span>服务列表</span>
             </div>
         </el-card>
         <div class="service-status-container">
@@ -36,7 +36,6 @@
                         </el-tag>
                     </template>
                 </el-table-column>
-                <!-- 其他列 -->
             </el-table>
         </div>
     </div>
@@ -67,7 +66,6 @@ export default {
             // 从服务器获取服务列表，根据search和filterStatus筛选
         },
         statusTagType(status) {
-            // 根据状态返回不同的标签类型
             switch (status) {
                 case 'completed':
                     return 'success';
@@ -80,7 +78,7 @@ export default {
             }
         },
         statusText(status) {
-            // 根据状态返回文本描述
+            
             switch (status) {
                 case 'completed':
                     return '完成';

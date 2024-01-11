@@ -13,11 +13,23 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="specialRequirements" label="特殊要求"></el-table-column>
-                <el-table-column prop="status" label="状态"></el-table-column>
-                <el-table-column prop="staff.id" label="服务人员"></el-table-column>
+                <el-table-column label="状态">
+                    <template slot-scope="scope">
+                        <span :class="['status-bubble', `status-${scope.row.status}`]">{{ scope.row.status }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="staff.name" label="服务人员"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button @click="cancelAppointment(scope.row)" size="mini">取消</el-button>
+                    </template>
+                    <template slot-scope="scope">
+                        <el-button v-if="scope.row.status === '已取消'" @click="closeService(scope.row)" size="mini">
+                            关闭服务
+                        </el-button>
+                        <el-button v-else disabled size="mini">
+                            关闭服务
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -35,9 +47,23 @@ export default {
         };
     },
     methods: {
+        //关闭服务
+        async closeService(appointment) {
+            await axios({
+                url:'http://localhost:3000/closeService',
+                method:"post",
+                data:{
+                    id: appointment.id
+                }
+            })
+            this.$message.success('已关闭服务');
+            this.getAppointments();
+        },
+        //格式化时间
         formatDate(dateTime) {
             return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
         },
+        //取消服务
         cancelAppointment(appointment) {
             axios.post('http://localhost:3000/cancelReservationService', { id: appointment.id })
                 .then(response => {
@@ -84,4 +110,32 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.status-bubble {
+    padding: 3px 10px;
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.status-待确认 {
+    background-color: #ffcc00; // 黄色
+}
+
+.status-已通过 {
+    background-color: #5cb85c; // 绿色
+}
+
+.status-已接取 {
+    background-color: #0275d8; // 蓝色
+}
+
+.status-已完成 {
+    background-color: #5bc0de; // 浅蓝色
+}
+
+.status-已取消 {
+    background-color: #d9534f; // 红色
+}
+</style>
+

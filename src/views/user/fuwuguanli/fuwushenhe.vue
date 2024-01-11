@@ -13,11 +13,16 @@
                         {{ formatDateTime(scope.row.appointmentTime) }}
                     </template>
                 </el-table-column>
-
+                <el-table-column prop="general.name" label="客户姓名"></el-table-column>
+                <el-table-column prop="general.phone" label="客户电话"></el-table-column>
+                <el-table-column prop="status" label="状态">
+                </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="approveAppointment(scope.row)" size="mini">批准</el-button>
-                        <el-button @click="rejectAppointment(scope.row)" size="mini">拒绝</el-button>
+                        <el-button @click="approveAppointment(scope.row)" size="mini"
+                            :disabled="scope.row.status !== '待确认'">批准</el-button>
+                        <el-button @click="rejectAppointment(scope.row)" size="mini"
+                            :disabled="scope.row.status !== '待确认'">拒绝</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -46,11 +51,37 @@ export default {
             this.pendingAppointments = res.data.data.list
             console.log(this.pendingAppointments);
         },
-        approveAppointment(appointment) {
-            // 实现批准预约的逻辑
+        async approveAppointment(appointment) {
+            try {
+                await axios({
+                    url: `http://localhost:3000/auditServices`,
+                    method: 'post',
+                    data: {
+                        id: appointment.id,
+                        status: '已通过' // 表示批准状态
+                    }
+                });
+                this.$message.success('预约服务已通过');
+                this.fetchPendingAppointments(); // 重新获取预约列表
+            } catch (error) {
+                his.$message.error('请求错误: ' + error);
+            }
         },
-        rejectAppointment(appointment) {
-            // 实现拒绝预约的逻辑
+        async rejectAppointment(appointment) {
+            try {
+                await axios({
+                    url: `http://localhost:3000/auditServices`,
+                    method: 'post',
+                    data: {
+                        id: appointment.id,
+                        status: '已拒绝' // 表示拒绝状态
+                    }
+                });
+                this.$message.success('预约服务已拒绝');
+                this.fetchPendingAppointments(); // 重新获取预约列表
+            } catch (error) {
+                this.$message.error('请求错误: ' + error);
+            }
         }
     },
     created() {

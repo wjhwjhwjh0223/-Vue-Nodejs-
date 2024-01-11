@@ -49,7 +49,7 @@ export default {
     data() {
         return {
             appointment: {
-                generalId: '',
+                generalId: localStorage.getItem('userId'),
                 serviceType: '',
                 serviceDescription: '',
                 specialRequirements: '',
@@ -58,7 +58,7 @@ export default {
         };
     },
     methods: {
-        //合并时间
+        
         async submitForm() {
             try {
                 const response = await axios.post('http://localhost:3000/appointmentServiceCreation', this.appointment);
@@ -77,7 +77,7 @@ export default {
         },
         resetForm() {
             this.appointment = {
-                generalId: '',
+                generalId: localStorage.getItem('userId'),
                 serviceType: '',
                 serviceDescription: '',
                 specialRequirements: '',
@@ -86,10 +86,6 @@ export default {
             };
         },
     },
-    created() {
-        this.appointment.generalId = localStorage.getItem('userId');
-        console.log('当前用户id:', this.appointment.generalId);
-    }
 };
 </script>
 

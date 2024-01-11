@@ -69,7 +69,7 @@ export default {
             try {
                 const response = await axios.post('http://localhost:3000/activitycreat', this.form);
                 if (response.data.code === 1) {
-                    
+
                     this.$message({ type: 'success', message: '创建成功!' });
                     this.resetForm();
                 } else {
@@ -81,19 +81,19 @@ export default {
             }
         },
         resetForm() {
-           this.form={
-            staffId: '',
+            this.form = {
+                staffId: '',
                 name: '',
                 description: '',
                 time: '',
                 location: '',
                 activityType: '',
                 participantCount: '',
-           };
+            };
         },
     },
     created() {
-        this.form.staffId = localStorage.getItem('userId'); 
+        this.form.staffId = localStorage.getItem('userId');
         console.log('当前员工ID:', this.form.staffId);
     }
 };
