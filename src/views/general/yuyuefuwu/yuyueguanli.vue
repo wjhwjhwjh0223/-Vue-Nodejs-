@@ -25,7 +25,7 @@
                             v-if="scope.row.status !== '已取消' && scope.row.status !== '已完成'">
                             取消
                         </el-button>
-                        <el-button v-if="scope.row.status === '已取消' || scope.row.status === '已完成'"
+                        <el-button v-if="scope.row.status === '已取消' || scope.row.status === '已完成'||scope.row.status==='已评价'"
                             @click="closeService(scope.row)" size="mini">
                             关闭服务
                         </el-button>
