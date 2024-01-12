@@ -94,7 +94,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('D:\\goge dowlowde\\9e619171-b40e-458c-833d-7736637306fd.webp'); 
+  background-image: url('https://img.99ppt.com/pic/ca2aa4be-2d42-45f4-90f3-561da4056df6.png'); 
   background-size: cover; // 确保图片覆盖整个区域
   background-position: center; // 图片居中显示
 }

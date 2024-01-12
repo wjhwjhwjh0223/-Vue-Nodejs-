@@ -6,6 +6,7 @@
             </div>
             <!-- 服务信息表格 -->
             <h3>服务信息</h3>
+            <div class="spacer1"></div>
             <el-table :data="[serviceDetails]" v-if="serviceDetails" style="width: 100%">
                 <el-table-column prop="id" label="服务单号"></el-table-column>
                 <el-table-column prop="serviceType" label="服务类型"></el-table-column>
@@ -28,7 +29,6 @@
                         <div v-else>暂无</div>
                     </template>
                 </el-table-column>
-
                 <el-table-column label="客户">
                     <template slot-scope="scope">
                         {{ scope.row.general.name }}
@@ -54,10 +54,11 @@
                 </el-table-column>
 
             </el-table>
-
+            <div class="spacer"></div>
             <!-- 工作人员信息表格 -->
             <template>
                 <h3>工作人员信息</h3>
+                <div class="spacer1"></div>
                 <div v-if="serviceDetails && serviceDetails.staff">
                     <el-table :data="[serviceDetails.staff]" style="width: 100%">
                         <el-table-column prop="id" label="员工id"></el-table-column>
@@ -77,10 +78,10 @@
                     暂无工作人员信息
                 </div>
             </template>
-
-
+            <div class="spacer"></div>
             <!-- 用户信息表格 -->
             <h3>用户信息</h3>
+            <div class="spacer1"></div>
             <el-table :data="[serviceDetails.general]" v-if="serviceDetails.general" style="width: 100%">
                 <el-table-column prop="id" label="用户id"></el-table-column>
                 <el-table-column label="用户头像">
@@ -142,6 +143,17 @@ export default {
 </script>
   
 <style lang="scss" scoped>
+.spacer {
+    height: 100px; /* 或者自定义适合的间距高度 */
+    margin-bottom: 20px; /* 可以根据需要调整底部外边距 */
+}
+
+
+.spacer1 {
+    height: 30px; /* 或者自定义适合的间距高度 */
+    margin-bottom: 20px; /* 可以根据需要调整底部外边距 */
+}
+
 h3 {
     /* 添加一些样式 */
     margin-top: 20px;
