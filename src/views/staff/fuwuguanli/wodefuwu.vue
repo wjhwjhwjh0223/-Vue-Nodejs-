@@ -54,7 +54,7 @@ export default {
                         status: '已完成' // 表示完成状态
                     }    
             })
-            this.$message.success('预约服务已通过');
+            this.$message.success('服务已完成');
             this.fetchMyServices();
         },
         //格式化日期

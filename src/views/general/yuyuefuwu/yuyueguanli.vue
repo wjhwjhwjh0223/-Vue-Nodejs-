@@ -20,20 +20,42 @@
                 </el-table-column>
                 <el-table-column prop="staff.name" label="服务人员"></el-table-column>
                 <el-table-column label="操作">
-                    <template slot-scope="scope">
-                        <el-button @click="cancelAppointment(scope.row)" size="mini">取消</el-button>
-                    </template>
-                    <template slot-scope="scope">
-                        <el-button v-if="scope.row.status === '已取消'" @click="closeService(scope.row)" size="mini">
+                    <template v-slot:default="scope">
+                        <el-button @click="cancelAppointment(scope.row)" size="mini"
+                            v-if="scope.row.status !== '已取消' && scope.row.status !== '已完成'">
+                            取消
+                        </el-button>
+                        <el-button v-if="scope.row.status === '已取消' || scope.row.status === '已完成'"
+                            @click="closeService(scope.row)" size="mini">
                             关闭服务
                         </el-button>
                         <el-button v-else disabled size="mini">
                             关闭服务
                         </el-button>
+                        <el-button v-if="scope.row.status === '已完成' && !scope.row.hasFeedback"
+                            @click="openReviewDialog(scope.row)" size="mini">
+                            评价
+                        </el-button>
+
                     </template>
+
                 </el-table-column>
             </el-table>
         </el-card>
+        <!-- 评价对话框 -->
+        <el-dialog title="提交评价" :visible.sync="showReviewDialog">
+            <!-- 显示评分组件 -->
+            <div class="block">
+                <el-rate v-model="feedback.reviewRating" :colors="colors">
+                </el-rate>
+            </div>
+            <el-input type="textarea" v-model="feedback.reviewContent" placeholder="请输入评价内容">
+            </el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="showReviewDialog = false">取消</el-button>
+                <el-button type="primary" @click="submitReview">提交评价</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -43,16 +65,77 @@ import dayjs from 'dayjs';
 export default {
     data() {
         return {
-            appointments: [] // 存储预约数据
-        };
+            appointments: [], // 存储预约数据
+            showReviewDialog: false,
+            colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+            feedback: {
+                reviewContent: '',
+                reviewRating: '', // 存储评分,
+            },
+            currentAppointmentId: null, // 当前选中的预约服务的 ID
+            currentstaffId: null
+        }
+
     },
     methods: {
+        //提交评价
+        async submitReview() {
+            if (this.feedback.reviewRating === 0) {
+                this.$message.warning('请先选择评分');
+                return;
+            }
+            if (!this.feedback.reviewContent.trim()) {
+                this.$message.warning('评价内容不能为空');
+                return;
+            }
+            // 构造要发送的数据
+            const reviewData = {
+                appointmentServiceId: this.currentAppointmentId,
+                staffId: this.currentstaffId,
+                feedback: {
+                    rating: this.feedback.reviewRating,
+                    comment: this.feedback.reviewContent
+                }
+            };
+            console.log(reviewData);
+            axios.post('http://localhost:3000/evaluationServices', reviewData)
+                .then(response => {
+                    this.$message.success('评价提交成功');
+                    // await axios({
+                    //     method:'post',
+                    //     url:'http://localhost:3000/auditServices',
+                    //     data:{
+                    //         id: this.currentAppointmentId, 
+                    //     }
+                    // })
+                    this.getAppointments();
+                })
+                .catch(error => {
+                    this.$message.error('提交评价失败: ' + error);
+                });
+
+            this.showReviewDialog = false; // 提交后关闭对话框
+        },
+        //打开评价对话框
+        openReviewDialog(appointment) {
+            console.log(appointment);
+            if (appointment.hasFeedback) {
+                this.$message.warning('这个预约服务已经被评价过了');
+                return;
+            }
+            this.currentAppointmentId = appointment.id;
+            this.currentstaffId = appointment.staff.id;
+            this.showReviewDialog = true;
+            this.feedback.reviewContent = ''; // 重置评价内容
+            this.feedback.reviewRating = 0; // 重置评分
+        },
+
         //关闭服务
         async closeService(appointment) {
             await axios({
-                url:'http://localhost:3000/closeService',
-                method:"post",
-                data:{
+                url: 'http://localhost:3000/closeService',
+                method: "post",
+                data: {
                     id: appointment.id
                 }
             })
@@ -136,6 +219,10 @@ export default {
 
 .status-已取消 {
     background-color: #d9534f; // 红色
+}
+
+.status-已评价 {
+    background-color: #ec1089; // 粉色
 }
 </style>
 
