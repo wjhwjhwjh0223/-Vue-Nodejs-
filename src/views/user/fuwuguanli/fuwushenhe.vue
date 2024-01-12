@@ -15,7 +15,10 @@
                 </el-table-column>
                 <el-table-column prop="general.name" label="客户姓名"></el-table-column>
                 <el-table-column prop="general.phone" label="客户电话"></el-table-column>
-                <el-table-column prop="status" label="状态">
+                <el-table-column label="状态">
+                    <template slot-scope="scope">
+                        <span :class="['status-bubble', `status-${scope.row.status}`]">{{ scope.row.status }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
@@ -90,4 +93,41 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.status-bubble {
+    padding: 3px 10px;
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.status-待确认 {
+    background-color: #ffcc00; // 黄色
+}
+
+.status-已通过 {
+    background-color: #5cb85c; // 绿色
+}
+
+.status-已接取 {
+    background-color: #0275d8; // 蓝色
+}
+
+.status-已完成 {
+    background-color: #5bc0de; // 浅蓝色
+}
+
+.status-已取消 {
+    background-color: #d9534f; // 红色
+}
+
+.status-已评价 {
+    background-color: #ec1089; // 粉色
+}
+
+.status-已拒绝 {
+    background-color: #6c757d; // 灰色
+}
+
+</style>
+

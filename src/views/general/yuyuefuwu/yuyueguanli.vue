@@ -5,6 +5,7 @@
                 <span>预约管理</span>
             </div>
             <el-table :data="appointments" style="width: 100%">
+                <el-table-column prop="id" label="服务单号"></el-table-column>
                 <el-table-column prop="serviceType" label="服务类型"></el-table-column>
                 <el-table-column prop="serviceDescription" label="服务描述"></el-table-column>
                 <el-table-column label="预约时间">
@@ -21,11 +22,13 @@
                 <el-table-column prop="staff.name" label="服务人员"></el-table-column>
                 <el-table-column label="操作">
                     <template v-slot:default="scope">
-                        <el-button @click="cancelAppointment(scope.row)" size="mini"
+                        <el-button @click="openCancelDialog(scope.row)" size="mini"
                             v-if="scope.row.status !== '已取消' && scope.row.status !== '已完成'">
                             取消
                         </el-button>
-                        <el-button v-if="scope.row.status === '已取消' || scope.row.status === '已完成'||scope.row.status==='已评价'"
+
+                        <el-button
+                            v-if="scope.row.status === '已取消' || scope.row.status === '已完成' || scope.row.status === '已评价'"
                             @click="closeService(scope.row)" size="mini">
                             关闭服务
                         </el-button>
@@ -36,7 +39,6 @@
                             @click="openReviewDialog(scope.row)" size="mini">
                             评价
                         </el-button>
-
                     </template>
 
                 </el-table-column>
@@ -56,6 +58,16 @@
                 <el-button type="primary" @click="submitReview">提交评价</el-button>
             </span>
         </el-dialog>
+        <!-- 取消理由对话框 -->
+        <el-dialog title="取消预约" :visible.sync="showCancelDialog">
+            <el-input type="textarea" v-model="cancelReason" placeholder="请输入取消理由，如果不想说明理由请写无">
+            </el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="showReviewDialog = false">关闭</el-button>
+                <el-button type="primary" @click="submitCancellation">提交取消</el-button>
+            </span>
+        </el-dialog>
+
     </div>
 </template>
 
@@ -65,12 +77,14 @@ import dayjs from 'dayjs';
 export default {
     data() {
         return {
+            showCancelDialog: false, // 新增状态变量控制取消对话框
+            cancelReason: '', // 存储取消理由
             appointments: [], // 存储预约数据
             showReviewDialog: false,
             colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
             feedback: {
                 reviewContent: '',
-                reviewRating: '', // 存储评分,
+                reviewRating: 0,
             },
             currentAppointmentId: null, // 当前选中的预约服务的 ID
             currentstaffId: null
@@ -78,6 +92,30 @@ export default {
 
     },
     methods: {
+
+        // 提交取消操作
+        async submitCancellation() {
+            if (!this.cancelReason.trim()) {
+                this.cancelReason = '无'; // 如果未填写理由，则默认为'无'
+            }
+            try {
+                console.log(this.cancelReason)
+                await this.cancelAppointment({ id: this.currentAppointmentId }, this.cancelReason);
+                this.$message.success('预约已取消');
+            } catch (error) {
+                this.$message.error('取消预约失败: ' + error);
+            }
+
+            this.showCancelDialog = false; // 关闭对话框
+        },
+
+        // 打开取消对话框
+        openCancelDialog(appointment) {
+            this.currentAppointmentId = appointment.id;
+            this.showCancelDialog = true;
+            this.cancelReason = ''; // 重置取消理由
+        },
+
         //提交评价
         async submitReview() {
             if (this.feedback.reviewRating === 0) {
@@ -127,7 +165,7 @@ export default {
             this.currentstaffId = appointment.staff.id;
             this.showReviewDialog = true;
             this.feedback.reviewContent = ''; // 重置评价内容
-            this.feedback.reviewRating = 0; // 重置评分
+            this.feedback.reviewRating = '0' // 重置评分
         },
 
         //关闭服务
@@ -142,25 +180,34 @@ export default {
             this.$message.success('已关闭服务');
             this.getAppointments();
         },
+
         //格式化时间
         formatDate(dateTime) {
             return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
         },
+
         //取消服务
-        cancelAppointment(appointment) {
-            axios.post('http://localhost:3000/cancelReservationService', { id: appointment.id })
+        cancelAppointment(appointment, reason) {
+            // 确保返回 axios.post 调用的 Promise
+            return axios.post('http://localhost:3000/cancelReservationService', {
+                id: appointment.id,
+                reason: reason
+            })
                 .then(response => {
+                    // 处理响应
                     if (response.data.code === 1) {
-                        this.$message.success('预约已取消');
-                        this.getAppointments()
+                        this.getAppointments();
                     } else {
                         this.$message.error('取消预约失败: ' + response.data.msg);
                     }
                 })
                 .catch(error => {
+                    // 处理错误
                     this.$message.error('请求错误: ' + error);
+                    throw error; // 抛出错误以便可以在调用链中捕获
                 });
         },
+
         //获取预约列表
         async getAppointments() {
             const userId = localStorage.getItem('userId');
@@ -224,5 +271,10 @@ export default {
 .status-已评价 {
     background-color: #ec1089; // 粉色
 }
+
+.status-已拒绝 {
+    background-color: #6c757d; // 灰色
+}
+
 </style>
 

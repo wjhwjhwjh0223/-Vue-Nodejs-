@@ -6,6 +6,12 @@ Vue.use(VueRouter)
 //角色:管理员,工作人员,老人
 // 这里定义非菜单栏的路由
 const commonRoutes = [
+
+  {
+    path: '/service-details',
+    name: 'ServiceDetails',
+    component: ()=>import('@/views/user/fuwuguanli/ServiceDetails.vue')
+  },
   // 登录
   {
     path: '/login',
@@ -97,9 +103,9 @@ export const menuRoutes = [
       component: () => import('@/views/user/fuwuguanli/fuwushenhe.vue')
     },
     {
-      path:'/fuwuguanli/fuwuzhuangtai',
+      path:'/fuwuguanli/fuwuliebiao',
       meta: { title: '服务列表',  },
-      component: () => import('@/views/user/fuwuguanli/fuwuzhuangtai.vue')
+      component: () => import('@/views/user/fuwuguanli/fuwuliebiao.vue')
     }
     ]
   },
