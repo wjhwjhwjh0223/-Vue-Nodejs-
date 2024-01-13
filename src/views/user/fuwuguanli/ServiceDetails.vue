@@ -144,18 +144,18 @@ export default {
   
 <style lang="scss" scoped>
 .spacer {
-    height: 100px; /* 或者自定义适合的间距高度 */
-    margin-bottom: 20px; /* 可以根据需要调整底部外边距 */
+    height: 100px; 
+    margin-bottom: 20px; 
 }
 
 
 .spacer1 {
-    height: 30px; /* 或者自定义适合的间距高度 */
-    margin-bottom: 20px; /* 可以根据需要调整底部外边距 */
+    height: 30px; 
+    margin-bottom: 20px; 
 }
 
 h3 {
-    /* 添加一些样式 */
+
     margin-top: 20px;
     font-size: 1.5em;
     color: #333;
