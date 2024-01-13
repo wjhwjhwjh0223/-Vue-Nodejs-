@@ -36,7 +36,7 @@
                 </el-table-column>
                 <el-table-column label="特殊情况说明">
                     <template slot-scope="scope">
-                        {{ scope.row.cancellationReason ? scope.row.cancellationReason : '无' }}
+                        {{ scope.row.specialRequirements ? scope.row.specialRequirements : '无' }}
                     </template>
                 </el-table-column>
                 <el-table-column label="服务评价">
