@@ -77,7 +77,8 @@
         <el-dialog :visible.sync="showEditHealthDialog" title="编辑健康档案信息">
             <el-form :model="healthData">
                 <el-form-item label="出生日期">
-                    <el-input v-model="healthData.dob"></el-input>
+                    <el-date-picker v-model="healthData.dob" type="date" placeholder="选择日期">
+                    </el-date-picker>
                 </el-form-item>
                 <el-form-item label="健康信息">
                     <el-input v-model="healthData.health"></el-input>
@@ -113,6 +114,10 @@ export default {
         this.fetchhealthData();
     },
     methods: {
+        formatDOB(date) {
+        if (!date) return '';
+        return dayjs(date).format('YYYY-MM-DD');
+    },
         //查询个人健康档案
         async fetchhealthData() {
             const generalId = localStorage.getItem('userId');
@@ -131,11 +136,14 @@ export default {
             const healthData = this.healthData;
             // 确保健康档案数据中包含用户ID
             healthData.generalId = userId;
+            this.healthData.dob= this.formatDOB(this.healthData.dob);
             console.log(healthData)
             try {
                 const response = await axios.post('http://localhost:3000/updateHealth', healthData);
                 if (response.data.code === 1) {
                     this.$message.success(response.data.msg || '健康档案更新成功');
+                    // 更新成功后重新获取健康档案数据
+                    this.fetchhealthData();
 
                 } else {
                     this.$message.error(response.data.msg || '更新失败');
@@ -182,24 +190,16 @@ export default {
             this.editFormData = Object.assign({}, this.general);
             this.showEditGeneralDialog = true;
         },
-        fetchUserData() {
-            const userId = localStorage.getItem('userId');
-            if (!userId) {
-                console.error('用户ID未找到');
-                return;
-            }
-            axios.get(`http://localhost:3000/general/${userId}`)
-                .then(response => {
-                    if (response.data && response.data.code === 1) {
-                        this.general = response.data.data;
-                        console.log('获取用户数据成功:', this.general);
-                    } else {
-                        console.error('查询失败:', response.data.msg);
-                    }
-                })
-                .catch(error => {
-                    console.error('请求错误:', error);
-                });
+        async fetchUserData() {
+            let id = localStorage.getItem('userId');
+            let res = await axios({
+                url: 'http://localhost:3000/general/id',
+                method: 'get',
+                params: {
+                    id: id
+                }
+            })
+            this.general = res.data.data
         },
         formatDateTime(dateTime) {
             return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');

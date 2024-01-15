@@ -72,8 +72,6 @@ export default {
             showEditstaffDialog: false,
             staff: null,
             editFormData: {},
-            healthData: {},
-            health: null
         };
     },
     created() {
@@ -110,24 +108,16 @@ export default {
             this.editFormData = Object.assign({}, this.staff);
             this.showEditstaffDialog = true;
         },
-        fetchUserData() {
-            const userId = localStorage.getItem('userId');
-            if (!userId) {
-                console.error('用户ID未找到');
-                return;
-            }
-            axios.get(`http://localhost:3000/staff/${userId}`)
-                .then(response => {
-                    if (response.data && response.data.code === 1) {
-                        this.staff = response.data.data;
-                        console.log('获取用户数据成功:', this.staff);
-                    } else {
-                        console.error('查询失败:', response.data.msg);
-                    }
-                })
-                .catch(error => {
-                    console.error('请求错误:', error);
-                });
+        async fetchUserData() {
+            let id = localStorage.getItem('userId');
+            let res = await axios({
+                url:'http://localhost:3000/staff/id',
+                method:'get',
+                params:{
+                    id:id
+                }
+            })
+            this.staff = res.data.data
         },
         formatDateTime(dateTime) {
             return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
