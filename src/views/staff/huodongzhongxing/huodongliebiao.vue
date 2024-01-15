@@ -67,7 +67,8 @@ export default {
         // 渲染负责人姓名
         renderStaffName(row) {
             return row.staff ? row.staff.name : '暂无';
-        }, formatDateTime(dateTime) {
+        }, 
+        formatDateTime(dateTime) {
       return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
         }
     },
