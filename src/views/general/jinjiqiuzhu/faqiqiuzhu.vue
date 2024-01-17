@@ -10,9 +10,13 @@
                 </el-form-item>
                 <el-form-item label="紧急类型">
                     <el-select v-model="form.type" placeholder="请选择">
-                        <el-option label="医疗紧急情况" value="medical"></el-option>
-                        <el-option label="安全事件" value="safety"></el-option>
-                        <el-option label="其他紧急情况" value="other"></el-option>
+                        <el-option label="医疗紧急情况" value="医疗紧急情况"></el-option>
+                        <el-option label="安全事件" value="安全事件"></el-option>
+                        <el-option label="火灾" value="火灾"></el-option>
+                        <el-option label="自然灾害" value="自然灾害"></el-option>
+                        <el-option label="交通事故" value="交通事故"></el-option>
+                        <el-option label="公共卫生事件" value="公共卫生事件"></el-option>
+                        <el-option label="其他紧急情况" value="其他紧急情况"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="位置信息">
@@ -61,9 +65,26 @@ export default {
             console.log(this.staffList, '111111111111111');
         },
         submitForm() {
-            console.log('求助信息', this.form);
-            // 提交表单的逻辑
-        },
+            const generalId = localStorage.getItem('userId');  // 获取当前用户ID
+            // 构造要发送的数据
+            const postData = {
+                details: this.form.details,
+                type: this.form.type,
+                location: this.form.location,
+                staffIds: this.form.selectedStaff,  // 选中的工作人员ID数组
+                generalId: generalId  // 当前用户ID
+            };
+            // 发送 POST 请求到后端
+            axios.post('http://localhost:3000/addEmergency', postData)
+                .then(response => {
+                    // 显示成功提示
+                    this.$message.success('提交成功');
+                })
+                .catch(error => {
+                    // 显示错误提示
+                    this.$message.error('提交失败');
+                });
+        }
     },
 }
 </script>

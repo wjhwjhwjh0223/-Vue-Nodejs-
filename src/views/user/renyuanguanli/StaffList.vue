@@ -137,7 +137,6 @@ export default {
             let res = await axios({
                 url: 'http://localhost:3000/staffDelete',
                 method: 'post',
-                //data是个对象
                 data: { id: id }
             })
             this.getparms()
