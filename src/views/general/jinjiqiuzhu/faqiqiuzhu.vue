@@ -56,37 +56,46 @@ export default {
         this.fetchStaffList();
     },
     methods: {
-        async fetchStaffList() {
-            let res = await axios({
-                url: 'http://localhost:3000/staffList',
-                method: 'get',
-            })
-            this.staffList = res.data.data
-            console.log(this.staffList, '111111111111111');
-        },
-        submitForm() {
-            const generalId = localStorage.getItem('userId');  // 获取当前用户ID
-            // 构造要发送的数据
-            const postData = {
-                details: this.form.details,
-                type: this.form.type,
-                location: this.form.location,
-                staffIds: this.form.selectedStaff,  // 选中的工作人员ID数组
-                generalId: generalId  // 当前用户ID
+        resetForm() {
+            this.form = {
+                details: '',
+                type: '',
+                location: '',
+                selectedStaff: []
             };
-            // 发送 POST 请求到后端
-            axios.post('http://localhost:3000/addEmergency', postData)
-                .then(response => {
-                    // 显示成功提示
-                    this.$message.success('提交成功');
+        },
+        async fetchStaffList() {
+                let res = await axios({
+                    url: 'http://localhost:3000/staffList',
+                    method: 'get',
                 })
-                .catch(error => {
-                    // 显示错误提示
-                    this.$message.error('提交失败');
-                });
-        }
-    },
-}
+                this.staffList = res.data.data
+                console.log(this.staffList, '111111111111111');
+            },
+            submitForm() {
+                const generalId = localStorage.getItem('userId');  // 获取当前用户ID
+                // 构造要发送的数据
+                const postData = {
+                    details: this.form.details,
+                    type: this.form.type,
+                    location: this.form.location,
+                    staffIds: this.form.selectedStaff,  // 选中的工作人员ID数组
+                    generalId: generalId  // 当前用户ID
+                };
+                // 发送 POST 请求到后端
+                axios.post('http://localhost:3000/addEmergency', postData)
+                    .then(response => {
+                        // 显示成功提示
+                        this.$message.success('提交成功');
+                        this.resetForm();
+                    })
+                    .catch(error => {
+                        // 显示错误提示
+                        this.$message.error('提交失败');
+                    });
+            }
+        },
+    }
 </script>
 
 <style lang="scss" scoped></style>
