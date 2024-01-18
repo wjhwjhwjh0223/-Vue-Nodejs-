@@ -74,6 +74,7 @@ export default {
             },
             submitForm() {
                 const generalId = localStorage.getItem('userId');  // 获取当前用户ID
+                
                 // 构造要发送的数据
                 const postData = {
                     details: this.form.details,
@@ -82,12 +83,13 @@ export default {
                     staffIds: this.form.selectedStaff,  // 选中的工作人员ID数组
                     generalId: generalId  // 当前用户ID
                 };
+                console.log(postData)
                 // 发送 POST 请求到后端
                 axios.post('http://localhost:3000/addEmergency', postData)
                     .then(response => {
                         // 显示成功提示
                         this.$message.success('提交成功');
-                        this.resetForm();
+                        this.resetForm();0
                     })
                     .catch(error => {
                         // 显示错误提示
