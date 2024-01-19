@@ -111,17 +111,13 @@ export const menuRoutes = [
   },
   //紧急事件模块
   {
-    path: '/jinjishijian',
+    path: '/user/jinjishijian',
     component: () => import('@/layout/Layout.vue'),
-    meta: { title: '紧急事件', icon: 'el-icon-warning',role:['userLogin'] },
+    meta: { title: '紧急事件', menu:true, icon: 'el-icon-warning',role:['userLogin'] },
     children: [{
-      path:'/jinjishijian/shijianliebiao',
-      meta: { title: '事件列表',  },
+      path:'',
+      meta: { title: '事件列表', menu:true },
       component: () => import('@/views/user/jinjishijian/shijianliebiao.vue')
-    },{
-      path:'/jinjishijian/renyuanfenpei',
-      meta: { title: '人员分配',  },
-      component: () => import('@/views/user/jinjishijian/renyuanfenpei.vue')
     }
   ]
   },
@@ -183,21 +179,18 @@ export const menuRoutes = [
   ,
   //工作人员紧急事件模块
   {
-    path:'/jinjishijian',
+    path: '/staff/jinjishijian',
     component: () => import('@/layout/Layout.vue'),
-    meta: { title: '紧急事件', icon: 'el-icon-warning',role:['staffLogin'] },
-    children:[{
-      path:'/staff/jinjishijian',
-      meta: { title: '紧急事件列表',  },
-      component: () => import('@/views/staff/jinjishijian/jinjishijianliebiao.vue')
-    },
-    {
-      path:'/staff/jinjishijian/wodejinjishijian',
-      meta: { title: '我的紧急事件',  },
-      component: () => import('@/views/staff/jinjishijian/wodejinjishijian.vue')
-    }]
-  }
-  ,
+    meta: { title: '紧急事件', icon: 'el-icon-warning', role: ['staffLogin'] },
+    children: [
+      {
+        path: '',
+        meta: { title: '我参与的紧急事件', menu: true ,},
+        component: () => import('@/views/staff/jinjishijian/wodejinjishijian.vue')
+       
+      }
+    ]
+  },
   //工作人员活动模块
   {
     path:'/huodongzhongxing',
