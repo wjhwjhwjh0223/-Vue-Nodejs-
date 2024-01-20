@@ -32,7 +32,15 @@
                         <el-radio label="其他">其他</el-radio>
                     </el-radio-group>
                 </el-form-item>
-
+                <el-form-item label="活动预览图" prop="avatar">
+                    <el-upload class="avatar-uploader" action="http://localhost:3000/file" :show-file-list="false"
+                        :on-success="success">
+                        <!-- 上传成功了就显示图片 -->
+                        <img v-if="form.avatar" :src="form.avatar" class="avatar">
+                        <!-- 上传之前就显示加号 -->
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
                 <el-form-item label="参加人数">
                     <el-input-number v-model="form.participantCount" :min="1" label="参加人数"
                         placeholder="请输入参加人数"></el-input-number>
@@ -61,10 +69,15 @@ export default {
                 location: '',
                 activityType: '',
                 participantCount: '',
+                avatar: ''
             }
         };
     },
     methods: {
+        success(res) {
+            //console.log(res)
+            this.form.avatar = res.data;
+        },
         async submitForm() {
             try {
                 const response = await axios.post('http://localhost:3000/activitycreat', this.form);
@@ -102,4 +115,10 @@ export default {
 
 
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.avatar {
+  width: 500px;
+  height: 300px;
+  display: block;
+}
+</style>
