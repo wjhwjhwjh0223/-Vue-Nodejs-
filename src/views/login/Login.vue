@@ -74,6 +74,7 @@ export default {
         });
         if (loginRes.data.code == 1) {
           localStorage.setItem("userId", loginRes.data.data.id);
+          localStorage.setItem("name", loginRes.data.data.name);
           localStorage.setItem("role", this.form.role);
           this.$router.push('/home');
         } else {
