@@ -136,7 +136,7 @@ export default {
     },
     async getactivity() {
       let res = await axios({
-        url: 'http://localhost:3000/getactivityList',
+        url: 'http://localhost:3000/wxGetactivityList',
         method: 'get',
       })
       console.log(res, '---------------')
@@ -156,13 +156,9 @@ export default {
   background-color: #f5f5f5;
   color: #333;
   padding: 20px;
-  /* 增加内边距 */
   border-radius: 10px;
-  /* 圆角 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* 阴影 */
   transition: all 0.3s ease;
-  /* 平滑过渡效果 */
 }
 
 .event-title {
@@ -170,7 +166,6 @@ export default {
   color: #007bff;
   font-size: 1.5em;
   margin-bottom: 15px;
-  /* 标题下边距 */
 }
 
 .event-time,
@@ -182,7 +177,6 @@ export default {
   margin: 10px 0;
   font-size: 1.1em;
   line-height: 1.4;
-  /* 行间距 */
 }
 
 /* 鼠标悬停在弹框上时的效果 */
@@ -196,9 +190,6 @@ export default {
   list-style: none;
 }
 
-
-
-
 .event-item {
   background-color: #409eff;
   color: white;
@@ -211,9 +202,14 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 80px;
-  /* 调整最大宽度 */
   display: block;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+
+  &:hover {
+    background-color: darken(#409eff, 10%);
+    transform: scale(1.1);
+  }
 }
 
 /* 悬停在活动名称上时的工具提示样式 */
@@ -229,5 +225,15 @@ export default {
   transform: translateX(-50%);
   white-space: nowrap;
   z-index: 20;
+}
+
+.cell {
+  border: 1px solid #ebebeb;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
 }
 </style>

@@ -4,6 +4,15 @@
             <div slot="header">
                 <span>活动列表</span>
             </div>
+            <div class="top-bar">
+                <el-select v-model="params.activityType" placeholder="请选择" @change="getactivity">
+                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
+                <el-button type="default" icon="el-icon-refresh" @click="resetSearch">
+                    重置
+                </el-button>
+            </div>
             <el-table :data="activityList" style="width: 100%">
                 <el-table-column prop="name" label="活动名称"></el-table-column>
                 <el-table-column prop="description" label="活动描述"></el-table-column>
@@ -45,6 +54,18 @@ import dayjs from 'dayjs';
 export default {
     data() {
         return {
+            options: [
+                { value: '社交活动', label: '社交活动' },
+                { value: '教育活动', label: '教育活动' },
+                { value: '音乐和舞蹈', label: '音乐和舞蹈' },
+                { value: '旅游和户外活动', label: '旅游和户外活动' },
+                { value: '健康与养生', label: '健康与养生' },
+                { value: '体育活动', label: '体育活动' },
+                { value: '其他', label: '其他' },
+            ],
+            params: {
+                activityType: ''
+            },
             // 存储活动列表
             activityList: [],
             pagenumber: 1,
@@ -59,6 +80,22 @@ export default {
         };
     },
     methods: {
+        resetSearch() {
+            // 重置 params 对象
+            this.params.activityType = '';
+            this.getactivity()
+        },
+        pagechange(pagenumber) {
+            //console.log(`页码改变了：${pagenumber}`);
+            this.pagenumber = pagenumber
+            this.getactivity()
+        },
+        async performSearch() {
+            //console.log("需要把以下的数据发给后端")
+            //console.log(this.pagenumber, this.pagesize, this.params.username)
+            this.getactivity()
+
+        },
         //参加活动
         // 用户点击参加活动按钮时调用
         async joinActivity(activity) {
@@ -89,30 +126,31 @@ export default {
             }
         },
 
-        // 获取活动列表
-        async fetchActivityList() {
-            try {
-                const response = await axios.get('http://localhost:3000/getactivityList');
-                if (response.data.code === 1) {
-                    this.activityList = response.data.data.list;
-                } else {
-                    this.$message.error('加载活动列表失败');
+        async getactivity() {
+            let res = await axios({
+                url: 'http://localhost:3000/getactivityList',
+                method: 'get',
+                params: {
+                    pagenumber: this.pagenumber,
+                    pagesize: this.pagesize,
+                    ...this.params // 包含搜索参数
                 }
-            } catch (error) {
-                console.error('请求失败:', error);
-                this.$message.error('请求失败');
-            }
+            })
+            //console.log(res, '---------------')
+            this.activityList = res.data.data.list
+            this.total = res.data.data.total;
+            //console.log(this.tableData)
         },
         // 渲染负责人姓名
         renderStaffName(row) {
             return row.staff ? row.staff.name : '暂无';
-        }, 
+        },
         formatDateTime(dateTime) {
             return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
         }
     },
     created() {
-        this.fetchActivityList(); // 组件创建时获取活动列表
+        this.getactivity(); // 组件创建时获取活动列表
     },
 };
 </script>

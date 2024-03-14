@@ -1,7 +1,7 @@
 <template>
   <div class="login-wrapper">
     <div class="login-form">
-      <h2 class="login-title">系统登录</h2>
+      <h2 class="login-title">社区养老服务平台</h2>
       <!-- 表单的容器 -->
       <el-form ref="ruleform">
         <!-- 表单项 账号 -->
@@ -15,6 +15,10 @@
           <el-input type="password" placeholder="请输入密码" v-model="form.password">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="form.captcha" placeholder="请输入验证码"></el-input>
+          <img :src="captchaUrl" @click="getCaptcha" />
         </el-form-item>
         <!-- 表单项 角色 -->
         <el-form-item>
@@ -42,10 +46,15 @@ export default {
         account: "",
         password: "",
         role: "",
+        captcha: "", // 添加验证码初始值
       },
+      captchaUrl: 'http://localhost:3000/captcha' // 初始验证码URL
     };
   },
   methods: {
+    getCaptcha() {
+      this.captchaUrl = 'http://localhost:3000/captcha?' + Date.now();
+    },
     clickEyes() {
       this.showPwd = !this.showPwd;
     },
@@ -71,7 +80,12 @@ export default {
         const loginRes = await axios.post(apiPath, {
           account: this.form.account,
           password: this.form.password,
-        });
+          captcha: this.form.captcha // 验证码字段
+        },
+        {
+          withCredentials: true // 允许携带跨域cookie
+        }
+        );
         if (loginRes.data.code == 1) {
           localStorage.setItem("userId", loginRes.data.data.id);
           localStorage.setItem("name", loginRes.data.data.name);
@@ -89,41 +103,78 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>.login-wrapper {
+<style lang="scss" scoped>
+@media screen and (max-width: 768px) {
+  .login-form {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .login-form {
+    width: 100%;
+    padding: 20px;
+  }
+}
+
+.el-button {
+  background-color: #4a5568;
+  border-color: #4a5568;
+  &:hover,
+  &:focus {
+    background-color: #2d3a4b;
+    border-color: #2d3a4b;
+  }
+}
+
+.el-form-item {
+  margin-top: 20px; // 增加表单项的上边距
+}
+
+.login-wrapper {
   width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('https://img.99ppt.com/pic/ca2aa4be-2d42-45f4-90f3-561da4056df6.png'); 
+  background-image: url('https://img.99ppt.com/pic/ca2aa4be-2d42-45f4-90f3-561da4056df6.png');
   background-size: cover; // 确保图片覆盖整个区域
   background-position: center; // 图片居中显示
 }
 
-  .login-form {
-    width: 500px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+img.captcha {
+  cursor: pointer;
+  border: 1px solid #ddd;
+  margin-top: 10px;
+  border-radius: 4px;
+}
 
-    .login-title {
-      margin: 20px;
-      font-weight: 700;
-      font-size: 22px;
-      color: #fff;
-    }
+.login-form {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    .el-form {
-      width: 100%;
-    }
+  .login-title {
+  margin: 20px;
+  margin-bottom: 30px; // 增加底部边距
+  font-weight: 700;
+  font-size: 22px;
+  color: #fff;
+}
+  .el-form {
+    width: 100%;
   }
+}
 
-  ::v-deep .el-input__inner {
-    background-color: #2d3a4b;
-  }
+::v-deep .el-input__inner {
+  background-color: rgba(45, 58, 75, 0.8); // 半透明背景
+  border: 1px solid #4a5568; // 边框颜色
+  color: #ffffff; // 字体颜色
+}
 
-  ::v-deep .el-input input {
-    color: #fff;
-  }
+::v-deep .el-input__icon {
+  color: #a0aec0; // 图标颜色
+}
 
 </style>

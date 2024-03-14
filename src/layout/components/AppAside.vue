@@ -1,23 +1,25 @@
 <template>
-  <aside :style="{width: isopen ? '200px' : '64px'}">
+  <aside :style="{width: isopen ? '220px' : '64px'}">
     <el-switch
       v-model="isopen"
       active-color="#13ce66"
       inactive-color="#ff4949">
     </el-switch>
+    <div class="sidebar-header">
+      社区养老服务平台
+    </div>
     <el-menu :default-active="comCurIndex" router background-color="#304156" :collapse="!isopen">
       <!-- 插槽 -->
       <template v-for="route in activeMenuRoutes">
         
         
-        <!-- 当route只有一个孩子的时候 -->
-        <el-menu-item v-if="route.children.length === 1" :key="route.path" :index="route.path">
+ <!-- 当route只有一个孩子的时候 -->
+ <el-menu-item v-if="route.children.length === 1" :key="route.path" :index="route.path">
           <i :class="route.meta.icon || 'el-icon-menu'"></i>
           <span slot="title">{{ route.meta.title }}</span>
         </el-menu-item>
-
         <!-- 当route的孩子大于1 -->
-        <el-submenu v-else :key="route.path" :index="route.path">
+        <el-submenu v-else :key="route.path + '-submenu'" :index="route.path">
           <template slot="title">
             <i :class=" route.meta.icon || 'el-icon-location'"></i>
             <span>{{ route.meta.title }}</span>
@@ -102,6 +104,12 @@
 </script>
 
 <style lang="scss" scoped>
+ .sidebar-header {
+    color: #fff;
+    text-align: center;
+    font-size: 20px;
+    padding: 10px 0;
+  }
   aside {
     color: #fff;
     width: 200px;

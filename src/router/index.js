@@ -40,19 +40,6 @@ export const menuRoutes = [
       }
     ]
   },
-  //数据中心模块
-  {
-    path:'/data',
-    component:()=>import('@/layout/Layout.vue'),
-    meta:{title:'数据中心',icon:'el-icon-s-data' ,role:['userLogin']},
-    children:[
-      {
-        path:'/data',
-        meta:{title:'数据中心',menu:true},
-        component:()=>import('@/views/data/Data.vue')
-      }
-    ]
-  },
 
   // 用户功能模块
   {
@@ -85,11 +72,12 @@ export const menuRoutes = [
         path:'/user/mimaxiugai',
         meta: { title: '密码修改',  },
         component: () => import('@/views/user/renyuanguanli/mimaxiugai.vue')
-      },{
-        path:'/user/gerenzhongxin',
-        meta: { title: '个人中心',  },
-        component: () => import('@/views/user/renyuanguanli/gerenzhongxin.vue')
       }
+      // {
+      //   path:'/user/gerenzhongxin',
+      //   meta: { title: '个人中心',  },
+      //   component: () => import('@/views/user/renyuanguanli/gerenzhongxin.vue')
+      // }
     ]
   },
   //服务管理模块

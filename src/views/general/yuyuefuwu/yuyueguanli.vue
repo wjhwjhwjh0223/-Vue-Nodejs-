@@ -4,6 +4,15 @@
             <div slot="header">
                 <span>预约管理</span>
             </div>
+            <div class="top-bar">
+                <el-select v-model="params.serviceType" placeholder="请选择" @change="getAppointments">
+                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
+                <el-button type="default" icon="el-icon-refresh" @click="resetSearch">
+                    重置
+                </el-button>
+            </div>
             <el-table :data="appointments" style="width: 100%">
                 <el-table-column prop="id" label="服务单号"></el-table-column>
                 <el-table-column prop="serviceType" label="服务类型"></el-table-column>
@@ -40,9 +49,11 @@
                             评价
                         </el-button>
                     </template>
-
                 </el-table-column>
             </el-table>
+            <el-pagination @current-change="pagechange" background layout="prev, pager, next" :total="total"
+                :page-size="pagesize">
+            </el-pagination>
         </el-card>
         <!-- 评价对话框 -->
         <el-dialog title="提交评价" :visible.sync="showReviewDialog">
@@ -77,6 +88,22 @@ import dayjs from 'dayjs';
 export default {
     data() {
         return {
+            options: [
+                { value: '家政服务', label: '家政服务' },
+                { value: '医疗护理', label: '医疗护理' },
+                { value: '餐饮服务', label: '餐饮服务' },
+                { value: '健康监护', label: '健康监护' },
+                { value: '休闲娱乐', label: '休闲娱乐' },
+                { value: '心理咨询', label: '心理咨询' },
+                { value: '交通服务', label: '交通服务' },
+                { value: '教育学习', label: '教育学习' }
+            ],
+            params: {
+                serviceType: ''
+            },
+            pagenumber: 1,
+            pagesize: 5,
+            total: this.total,
             showCancelDialog: false, // 新增状态变量控制取消对话框
             cancelReason: '', // 存储取消理由
             appointments: [], // 存储预约数据
@@ -92,7 +119,23 @@ export default {
 
     },
     methods: {
+        pagechange(pagenumber) {
+            //console.log(`页码改变了：${pagenumber}`);
+            this.pagenumber = pagenumber
+            // 重新请求数据
+            this.getAppointments()
+        },
+        async performSearch() {
+            //console.log("需要把以下的数据发给后端")
+            //console.log(this.pagenumber, this.pagesize, this.params.username)
+            this.getAppointments()
 
+        },
+        resetSearch() {
+            // 重置 params 对象
+            this.params.serviceType = '';
+            this.getAppointments()
+        },
         // 提交取消操作
         async submitCancellation() {
             if (!this.cancelReason.trim()) {
@@ -217,12 +260,16 @@ export default {
                     method: 'get',
                     params: {
                         id: userId,
+                        pagenumber: this.pagenumber,
+                        pagesize: this.pagesize,
+                        ...this.params // 包含搜索参数
                     }
                 });
                 // 正确引用 API 响应数据
                 if (res.data.data && Array.isArray(res.data.data.list)) {
                     this.appointments = res.data.data.list;
-                    console.log(this.appointments);
+                    this.total = res.data.data.total;
+                    //console.log(this.appointments);
                 } else {
                     console.error('Expected list not found in response:', res.data);
                     this.appointments = [];
@@ -275,6 +322,5 @@ export default {
 .status-已拒绝 {
     background-color: #6c757d; // 灰色
 }
-
 </style>
 

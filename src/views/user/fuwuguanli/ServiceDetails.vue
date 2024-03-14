@@ -121,7 +121,7 @@ export default {
         async fetchAllInformation() {
             try {
                 // 使用服务 ID 调用后端接口
-                const response = await axios.get('http://localhost:3000/getAllInformation', {
+                const response = await axios.get('http://localhost:3000/getAllInformations', {
                     params: { id: this.$route.query.id }
                 });
                 console.log(response.data.data.list);

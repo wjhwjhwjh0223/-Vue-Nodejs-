@@ -148,8 +148,8 @@ export default {
             this.getparms()
         },
         async performSearch() {
-            console.log("需要把以下的数据发给后端")
-            console.log(this.pagenumber, this.pagesize, this.params.username)
+            //console.log("需要把以下的数据发给后端")
+            //console.log(this.pagenumber, this.pagesize, this.params.username)
             this.getparms()
             
         },

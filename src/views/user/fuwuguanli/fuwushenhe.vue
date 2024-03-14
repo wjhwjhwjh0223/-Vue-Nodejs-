@@ -4,6 +4,16 @@
             <div slot="header">
                 <span>预约审核</span>
             </div>
+            <!-- 搜索栏和分类筛选 -->
+            <div class="top-bar">
+                <el-select v-model="params.serviceType" placeholder="请选择" @change="fetchPendingAppointments">
+                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
+                <el-button type="default" icon="el-icon-refresh" @click="resetSearch">
+                    重置
+                </el-button>
+            </div>
             <el-table :data="pendingAppointments" style="width: 100%">
                 <el-table-column prop="id" label="预约ID"></el-table-column>
                 <el-table-column prop="serviceType" label="服务类型"></el-table-column>
@@ -29,6 +39,9 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <el-pagination @current-change="pagechange" background layout="prev, pager, next" :total="total"
+                :page-size="pagesize">
+            </el-pagination>
         </el-card>
     </div>
 </template>
@@ -39,10 +52,43 @@ import dayjs from 'dayjs';
 export default {
     data() {
         return {
-            pendingAppointments: [] // 存储待审核的预约
+            options: [
+                { value: '家政服务', label: '家政服务' },
+                { value: '医疗护理', label: '医疗护理' },
+                { value: '餐饮服务', label: '餐饮服务' },
+                { value: '健康监护', label: '健康监护' },
+                { value: '休闲娱乐', label: '休闲娱乐' },
+                { value: '心理咨询', label: '心理咨询' },
+                { value: '交通服务', label: '交通服务' },
+                { value: '教育学习', label: '教育学习' }
+            ],
+            pendingAppointments: [],// 存储待审核的预约
+            params: {
+                serviceType: ''
+            },
+            pagenumber: 1,
+            pagesize: 5,
+            total: this.total,
         };
     },
     methods: {
+        pagechange(pagenumber) {
+            //console.log(`页码改变了：${pagenumber}`);
+            this.pagenumber = pagenumber
+            // 重新请求数据
+            this.fetchPendingAppointments()
+        },
+        async performSearch() {
+            //console.log("需要把以下的数据发给后端")
+            //console.log(this.pagenumber, this.pagesize, this.params.username)
+            this.fetchPendingAppointments()
+
+        },
+        resetSearch() {
+            // 重置 params 对象
+            this.params.serviceType = '';
+            this.fetchPendingAppointments()
+        },
         formatDateTime(dateTime) {
             return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
         },
@@ -50,8 +96,14 @@ export default {
             let res = await axios({
                 url: 'http://localhost:3000/getappointmentList',
                 method: 'get',
+                params: {
+                    pagenumber: this.pagenumber,
+                    pagesize: this.pagesize,
+                    ...this.params // 包含搜索参数
+                }
             })
             this.pendingAppointments = res.data.data.list
+            this.total = res.data.data.total;
             console.log(this.pendingAppointments);
         },
         async approveAppointment(appointment) {
@@ -129,5 +181,11 @@ export default {
     background-color: #6c757d; // 灰色
 }
 
+.top-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+
+}
 </style>
 
